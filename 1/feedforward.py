@@ -85,6 +85,8 @@ def get_data(number_of_data, flag):
     return test_set, train_set
 
 
+def hr():
+    print('\n', '- ' * 40, '\n')
 """
     Pseudo Code:
         Allocate W matrix and vector b for each layer.
@@ -102,6 +104,13 @@ def get_data(number_of_data, flag):
                 b = b - (learning_rate × (grad_b / batch_size))
 """
 
+
+def calculate_cost(a, y):
+    mse = 0
+    for i in range(10):
+        mse = np.add(mse, np.square(a[i] - y[i]))
+    return mse
+
 if __name__ == '__main__':
     print('STEP 1: GETTING THE DATASET')
     number_of_samples = 100
@@ -115,8 +124,9 @@ if __name__ == '__main__':
         print('LABEL={}   '.format(np.argmax(train_set[p][1])), end='')
     print('\n\t\tDONE')
 
-    print('\n', '- ' * 30, '\n')
-    print('STEP 2: CALCULATING INITIAL ACCURACY')
+    hr()
+
+    print('STEP 2: CALCULATING FEEDFORWARD OUTPUT AND INITIAL ACCURACY')
 
     np.set_printoptions(suppress=True)
     learning_rate = 1
@@ -124,7 +134,8 @@ if __name__ == '__main__':
     batch_size = 10
 
     number_of_correct_guesses = 0
-
+    a3 = []
+    cost = []
     for i in range(number_of_samples):
         """
         + - - - +         + - - - - +         + - - - - +         + - - - - +  
@@ -154,8 +165,20 @@ if __name__ == '__main__':
 
         if label == guess:
             number_of_correct_guesses += 1
-
+        # print(a3)
+        # print(train_set[i][1])
         # print('{}\t\tGUESS: {}\tLABEL: {}\t{}'.format(i+1, guess, label, label == guess))
+        # print('\t', calculate_cost(a3, train_set[i][1]))
+        cost.append(calculate_cost(a3, train_set[i][1]))
     accuracy = number_of_correct_guesses / number_of_samples * 100
     print('\tACCURACY : {}%'.format(accuracy))
+
+    hr()
+
+    # print(len(train_set[0][1]))
+    cost = 0
+    # print(a3[0])
+    # print(train_set[0][1])
+
+
 
