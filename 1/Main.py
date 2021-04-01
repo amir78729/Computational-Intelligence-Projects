@@ -442,7 +442,7 @@ if __name__ == "__main__":
     Read data, train network, print error rate.
     """
 
-    TRAINING_COUNT = 0  # Use all training data.
+    TRAINING_COUNT = 100  # Use all training data.
     training_images_archive_filename = "train-images-idx3-ubyte.gz"
     training_labels_archive_filename = "train-labels-idx1-ubyte.gz"
     training_data = list(read_image_and_label_data(training_images_archive_filename,
@@ -450,7 +450,7 @@ if __name__ == "__main__":
                                                    max_pairs=TRAINING_COUNT))
     print("Number of instances from training data: {0}".format(len(training_data)))
 
-    TEST_COUNT = 0  # Use all test data.
+    TEST_COUNT = 100  # Use all test data.
     test_images_archive_filename = "t10k-images-idx3-ubyte.gz"
     test_labels_archive_filename = "t10k-labels-idx1-ubyte.gz"
     test_data = list(read_image_and_label_data(test_images_archive_filename,
@@ -493,9 +493,11 @@ if __name__ == "__main__":
                       use_softmax=USE_SOFTMAX)
     train_network(network,
                   training_data,
+                  # test_set,
                   epoch_count=EPOCH_COUNT,
                   batch_size=BATCH_SIZE,
                   eta=LEARNING_RATE,
+                  # error_rate_func=lambda n: get_error_rate(n, test_set))
                   error_rate_func=lambda n: get_error_rate(n, test_data))
 
 
