@@ -309,7 +309,6 @@ def sigmoid(z):
     """
     z is a numpy.ndarray. Returns the sigmoid function for each input element.
     """
-
     return np.divide(1.0, np.add(1.0, np.exp(-z)))
 
 
@@ -317,7 +316,6 @@ def sigmoid_derivative(z):
     """
     z is a numpy.ndarray. Returns the derivative of the sigmoid function for each input element.
     """
-
     s = sigmoid(z)
     return np.multiply(s, np.subtract(1.0, s))
 
@@ -361,26 +359,7 @@ def tanh_initial_weights(n_out, n_in):
                              size=(n_out, n_in))
 
 
-def relu(z):
-    """
-    z is a numpy.ndarray. Returns the rectified linear unit function for each input element.
-    """
-    return np.maximum(0.0, z)
 
-
-def relu_derivative(z):
-    """
-    z is a numpy.ndarray. Returns the derivative of the rectified linear unit function for each
-    input element.
-    """
-    return np.where(z <= 0.0, 0.0, 1.0)
-
-
-def relu_initial_weights(n_out, n_in):
-    """
-    TODO: Not implemented!
-    """
-    assert False
 
 
 def train_network(net, data, epoch_count, batch_size, eta, error_rate_func=None):
@@ -442,7 +421,7 @@ if __name__ == "__main__":
     Read data, train network, print error rate.
     """
 
-    TRAINING_COUNT = 100  # Use all training data.
+    TRAINING_COUNT = 50  # Use all training data.
     training_images_archive_filename = "train-images-idx3-ubyte.gz"
     training_labels_archive_filename = "train-labels-idx1-ubyte.gz"
     training_data = list(read_image_and_label_data(training_images_archive_filename,
