@@ -114,11 +114,35 @@ def hr():
     print('\n', '- ' * 40, '\n')
 
 
-def calculate_cost(a, y):
-    mse = 0
-    for i in range(10):
-        mse = np.add(mse, np.square(a[i] - y[i]))
-    return mse
+def calculate_cost(a_j, y_j):
+    """
+    calculating cost using MSE
+    :param a_j: guessed values from feedforward
+    :param y_j: real values (labels)
+    :return: cost = Σ[(a_j - y_j)^2]
+    """
+    return np.power(np.subtract(a_j, y_j), 2).sum(axis=0)
+
+
+def feedforward(inputs, weight, bias, activation_function="sigmoid"):
+    """
+    + - - - +         + - - - - +         + - - - - +         + - - - - +
+    |  x1   |         |  a1_1   |         |  a2_1   |         |  a3_1   |
+    |  x2   |   w1    |  a1_2   |   w2    |  a2_2   |   w3    |  a3_2   |
+    |  x3   | ----- > |  a1_3   | ----- > |  a2_3   | ----- > |  a3_3   |
+    |  ...  |   b1    |   ...   |   b2    |   ...   |   b3    |   ...   |
+    |  x784 |         |  a1_16  |         |  a2_16  |         |  a3_10  |
+    + - - - +         + - - - - +         + - - - + -         + - - - - +
+
+    :param inputs:
+    :param weight:
+    :param bias:
+    :param activation_function:
+    :return:
+    """
+    a1 = calc(weight[0], inputs, bias[0], activation_function)
+    a2 = calc(weight[1], a1, bias[1], activation_function)
+    return calc(weight[2], a2, bias[2], activation_function)
 
 
 def train_network(net, data, epoch_count, batch_size, eta, error_rate_func=None):
@@ -193,16 +217,6 @@ if __name__ == '__main__':
 
 
     # for i in range(number_of_samples):
-    #     """
-    #     + - - - +         + - - - - +         + - - - - +         + - - - - +
-    #     |  x1   |         |  a1_1   |         |  a2_1   |         |  a3_1   |
-    #     |  x2   |   w1    |  a1_2   |   w2    |  a2_2   |   w3    |  a3_2   |
-    #     |  x3   | ----- > |  a1_3   | ----- > |  a2_3   | ----- > |  a3_3   |
-    #     |  ...  |   b1    |   ...   |   b2    |   ...   |   b3    |   ...   |
-    #     |  x784 |         |  a1_16  |         |  a2_16  |         |  a3_10  |
-    #     + - - - +         + - - - - +         + - - - + -         + - - - - +
-    #
-    #     """
     #     w1 = np.random.normal(npm.zeros((16, 784)), npm.ones((16, 784)))
     #     b1 = np.zeros(16)[np.newaxis]
     #     x1 = train_set[i][0]
@@ -241,25 +255,27 @@ if __name__ == '__main__':
 
     y = np.zeros(10).reshape(10, 1)
     b = np.zeros(784).reshape(784, 1)
-    for p in range(20):
+    for p in range(100):
         b = np.concatenate((b, train_set[p][0]), axis=1)
         y = np.concatenate((y, train_set[p][1]), axis=1)
     b = b[:, 1:]  # remove the 1st column with zeros
     y = y[:, 1:]  # remove the 1st column with zeros
 
-    print(b)
+    # print(b)
+
     w1 = np.random.normal(npm.zeros((16, 784)), npm.ones((16, 784)))
     b1 = np.zeros(16)[np.newaxis]
     x1 = b
-    a1 = calc(w1, x1, b1, "sigmoid")
-
+    # a1 = calc(w1, x1, b1, "sigmoid")
+    #
     w2 = np.random.normal(npm.zeros((16, 16)), npm.ones((16, 16)))
     b2 = np.zeros(16)[np.newaxis]
-    a2 = calc(w2, a1, b2, "sigmoid")
-
+    # a2 = calc(w2, a1, b2, "sigmoid")
+    #
     w3 = np.random.normal(npm.zeros((10, 16)), npm.ones((10, 16)))
     b3 = np.zeros(10)[np.newaxis]
-    a3 = calc(w3, a2, b3, "sigmoid")
+    # a3 = calc(w3, a2, b3, "sigmoid")
+    a3 = feedforward(x1, [w1, w2, w3], [b1, b2, b3], "sigmoid")
 
     guess = np.argmax(a3, axis=0)
     label = np.argmax(y, axis=0)
@@ -275,6 +291,10 @@ if __name__ == '__main__':
 
     print(guess)
     print(label)
+    print( np.sum(guess == label)/guess.shape[0] )
 
-    print(calculate_cost(guess, label).)
+    print(calculate_cost(a3, y))
+
+
+
 
