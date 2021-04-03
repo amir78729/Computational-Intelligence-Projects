@@ -114,6 +114,9 @@ def hr():
     print('\n', '- ' * 40, '\n')
 
 
+def calculate_accuracy(guess, lable):
+    return np.sum(guess == label) / guess.shape[0]
+
 def calculate_cost(a_j, y_j):
     """
     calculating cost using MSE
@@ -146,22 +149,7 @@ def feedforward(inputs, weight, bias, activation_function="sigmoid"):
 
 
 def train_network(net, data, epoch_count, batch_size, eta, error_rate_func=None):
-    """
-        Pseudo Code:
-            Allocate W matrix and vector b for each layer.
-            Initialize W from standard normal distribution, and b = 0, for each layer.
-            Set learning_rate, number_of_epochs, and batch_size.
-            for i from 0 to number_of_epochs:
-                Shuffle the train set.
-                for each batch in train set:
-                    Allocate grad_W matrix and vector grad_b for each layer and initialize to 0.
-                    for each image in batch:
-                        Compute the output for this image.
-                        grad_W += dcost/dW for each layer (using backpropagation)
-                        grad_b += dcost/db for each layer (using backpropagation)
-                    W = W - (learning_rate × (grad_W / batch_size))
-                    b = b - (learning_rate × (grad_b / batch_size))
-    """
+
     n = len(data)
     for e in range(epoch_count):
         np.random.shuffle(data)
@@ -182,13 +170,13 @@ if __name__ == '__main__':
     test_set, train_set = get_data(number_of_samples, True)
     print('\tTRAIN_SET AND TEST_SET ARE READY TO USE!')
     print('\tPLOTTING SOME DATA:\n\t\t',end='')
-    number_of_plotting_exampels = 5
+    number_of_plotting_examples = 5
 
     b = np.zeros(10).reshape(10, 1)
 
     print(b)
 
-    for p in range(number_of_plotting_exampels):
+    for p in range(number_of_plotting_examples):
         show_image(train_set[p])
         plt.show()
         # print('LABEL={}   '.format(np.argmax(train_set[p][1])), end='')
@@ -206,79 +194,78 @@ if __name__ == '__main__':
     print('STEP 2: CALCULATING FEEDFORWARD OUTPUT AND INITIAL ACCURACY')
 
     np.set_printoptions(suppress=True)
-    learning_rate = 1
-    number_of_epochs = 20
-    batch_size = 10
 
-    number_of_correct_guesses = 0
-    a3 = []
-    cost = []
+    # a3 = []
+    # cost = []
 
+    # creating input and label outputs for first 100 data
+    y = np.zeros(10).reshape(10, 1)
+    x1 = np.zeros(784).reshape(784, 1)
+    for p in range(number_of_samples):
+        x1 = np.concatenate((x1, train_set[p][0]), axis=1)
+        y = np.concatenate((y, train_set[p][1]), axis=1)
 
+    # removing the most left column
+    x1 = x1[:, 1:]
+    y = y[:, 1:]
 
-    # for i in range(number_of_samples):
-    #     w1 = np.random.normal(npm.zeros((16, 784)), npm.ones((16, 784)))
-    #     b1 = np.zeros(16)[np.newaxis]
-    #     x1 = train_set[i][0]
-    #     a1 = calc(w1, x1, b1, "sigmoid")
-    #
-    #     w2 = np.random.normal(npm.zeros((16, 16)), npm.ones((16, 16)))
-    #     b2 = np.zeros(16)[np.newaxis]
-    #     a2 = calc(w2, a1, b2, "sigmoid")
-    #
-    #     w3 = np.random.normal(npm.zeros((10, 16)), npm.ones((10, 16)))
-    #     b3 = np.zeros(10)[np.newaxis]
-    #     a3 = calc(w3, a2, b3, "sigmoid")
-    #
-    #     guess = np.argmax(a3)
-    #     label = np.argmax(train_set[i][1])
-    #
-    #     if label == guess:
-    #         number_of_correct_guesses += 1
-    #     # print(a3)
-    #     # print(train_set[i][1])
-    #     # print('{}\t\tGUESS: {}\tLABEL: {}\t{}'.format(i+1, guess, label, label == guess))
-    #     # print('\t', calculate_cost(a3, train_set[i][1]))
-    #     cost.append(calculate_cost(a3, train_set[i][1]))
+    # initializing weights
+    w1 = np.random.normal(npm.zeros((16, 784)), npm.ones((16, 784)))
+    w2 = np.random.normal(npm.zeros((16, 16)), npm.ones((16, 16)))
+    w3 = np.random.normal(npm.zeros((10, 16)), npm.ones((10, 16)))
 
-    accuracy = number_of_correct_guesses / number_of_samples * 100
-    print('\tACCURACY : {}%'.format(accuracy))
+    # initializing biases
+    b1 = np.zeros(16)[np.newaxis]
+    b2 = np.zeros(16)[np.newaxis]
+    b3 = np.zeros(10)[np.newaxis]
+
+    # calculating output
+    a3 = feedforward(x1, [w1, w2, w3], [b1, b2, b3], "sigmoid")
+
+    # calculating the accuracy
+    guess = np.argmax(a3, axis=0)
+    label = np.argmax(y, axis=0)
+    accuracy = calculate_accuracy(guess, label)
+    print('\tACCURACY : {}%'.format(accuracy * 100))
 
     hr()
 
     print('STEP 3: IMPLEMENTING BACK-PROPAGATION')
+
+    """
+        Pseudo Code:
+            Allocate W matrix and vector b for each layer.
+            Initialize W from standard normal distribution, and b = 0, for each layer.
+            Set learning_rate, number_of_epochs, and batch_size.
+            for i from 0 to number_of_epochs:
+                Shuffle the train set.
+                for each batch in train set:
+                    Allocate grad_W matrix and vector grad_b for each layer and initialize to 0.
+                    for each image in batch:
+                        Compute the output for this image.
+                        grad_W += dcost/dW for each layer (using backpropagation)
+                        grad_b += dcost/db for each layer (using backpropagation)
+                    W = W - (learning_rate × (grad_W / batch_size))
+                    b = b - (learning_rate × (grad_b / batch_size))
+    """
+
+    learning_rate = 1
+    number_of_epochs = 20
+    batch_size = 10
+
+    for epoch in range(number_of_epochs):
+        print('epoch #{}'.format(epoch + 1))
+
+    # print(calculate_cost(a3, y))
+
+
 
     # print(len(train_set[0][1]))
     # print(np.array(cost))
     # print(a3[0])
     # print(train_set[0][1])
 
-    y = np.zeros(10).reshape(10, 1)
-    b = np.zeros(784).reshape(784, 1)
-    for p in range(100):
-        b = np.concatenate((b, train_set[p][0]), axis=1)
-        y = np.concatenate((y, train_set[p][1]), axis=1)
-    b = b[:, 1:]  # remove the 1st column with zeros
-    y = y[:, 1:]  # remove the 1st column with zeros
 
-    # print(b)
-
-    w1 = np.random.normal(npm.zeros((16, 784)), npm.ones((16, 784)))
-    b1 = np.zeros(16)[np.newaxis]
-    x1 = b
-    # a1 = calc(w1, x1, b1, "sigmoid")
-    #
-    w2 = np.random.normal(npm.zeros((16, 16)), npm.ones((16, 16)))
-    b2 = np.zeros(16)[np.newaxis]
-    # a2 = calc(w2, a1, b2, "sigmoid")
-    #
-    w3 = np.random.normal(npm.zeros((10, 16)), npm.ones((10, 16)))
-    b3 = np.zeros(10)[np.newaxis]
-    # a3 = calc(w3, a2, b3, "sigmoid")
-    a3 = feedforward(x1, [w1, w2, w3], [b1, b2, b3], "sigmoid")
-
-    guess = np.argmax(a3, axis=0)
-    label = np.argmax(y, axis=0)
 
 
     # if label == guess:
@@ -289,11 +276,6 @@ if __name__ == '__main__':
 
     hr()
 
-    print(guess)
-    print(label)
-    print( np.sum(guess == label)/guess.shape[0] )
-
-    print(calculate_cost(a3, y))
 
 
 
