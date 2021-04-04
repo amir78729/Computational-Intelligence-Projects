@@ -18,7 +18,7 @@ class NeuralNetwork:
 def show_image(img):
     image = img[0].reshape((28, 28))
     plt.title('LABEL = {}'.format(np.argmax(img[1])))
-    plt.style.use("dark_background")
+
     # plt.gcf().set_
     plt.imshow(image, 'gray')
 
@@ -117,6 +117,7 @@ def hr():
 def calculate_accuracy(guess, lable):
     return np.sum(guess == label) / guess.shape[0]
 
+
 def calculate_cost(a_j, y_j):
     """
     calculating cost using MSE
@@ -174,12 +175,12 @@ if __name__ == '__main__':
 
     b = np.zeros(10).reshape(10, 1)
 
-    print(b)
-
+    # print(b)
+    plt.style.use("dark_background")
     for p in range(number_of_plotting_examples):
         show_image(train_set[p])
         plt.show()
-        # print('LABEL={}   '.format(np.argmax(train_set[p][1])), end='')
+        print('LABEL={}   '.format(np.argmax(train_set[p][1])), end='')
 
         # print(train_set[p][1])
         b = np.concatenate((b, train_set[p][1]), axis=1)
@@ -187,7 +188,6 @@ if __name__ == '__main__':
     b = b[:, 1:]  # remove the 1st column with zeros
 
     print('\n\t\tDONE')
-
 
     hr()
 
@@ -256,23 +256,43 @@ if __name__ == '__main__':
     for epoch in range(number_of_epochs):
         print('epoch #{}'.format(epoch + 1))
 
-    # print(calculate_cost(a3, y))
+        # shuffle the train set
+        np.random.shuffle(train_set)
 
+        for batch in range(number_of_samples//batch_size):
+            print('\tbatch #{}'.format(batch + 1))
 
+            # creating input and label outputs for first 100 data
+            y = np.zeros(10).reshape(10, 1)
+            x1 = np.zeros(784).reshape(784, 1)
 
-    # print(len(train_set[0][1]))
-    # print(np.array(cost))
-    # print(a3[0])
-    # print(train_set[0][1])
+            # initializing weights
+            w1 = np.random.normal(npm.zeros((16, 784)), npm.ones((16, 784)))
+            w2 = np.random.normal(npm.zeros((16, 16)), npm.ones((16, 16)))
+            w3 = np.random.normal(npm.zeros((10, 16)), npm.ones((10, 16)))
 
+            # initializing biases
+            b1 = np.zeros(16)[np.newaxis]
+            b2 = np.zeros(16)[np.newaxis]
+            b3 = np.zeros(10)[np.newaxis]
 
+            for p in range(batch_size):
+                x1 = np.concatenate((x1, train_set[batch + p][0]), axis=1)
+                y = np.concatenate((y, train_set[batch + p][1]), axis=1)
 
+            # removing the most left column
+            x1 = x1[:, 1:]
+            y = y[:, 1:]
 
-    # if label == guess:
-    #     number_of_correct_guesses += 1
+            a3 = feedforward(x1, [w1, w2, w3], [b1, b2, b3], "sigmoid")
 
-    # print(a3)
-    # print(y)
+            guess = np.argmax(a3, axis=0)
+            label = np.argmax(y, axis=0)
+            print(label)
+            accuracy = calculate_accuracy(guess, label)
+            print('\t\t', accuracy*100)
+            # print(calculate_cost(a3, y))
+
 
     hr()
 
