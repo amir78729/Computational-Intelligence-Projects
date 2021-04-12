@@ -33,7 +33,8 @@ def calc(weights, inputs, biases, activation_function):
     :return: output = σ( W × A + B)
     """
     if activation_function == "sigmoid":
-        return sigmoid(np.dot(weights, inputs) + biases.T)
+        z = np.dot(weights, inputs) + biases.T
+        return z, sigmoid(z)
 
 
 def sigmoid(z):
@@ -114,7 +115,7 @@ def hr():
     print('\n', '- ' * 40, '\n')
 
 
-def calculate_accuracy(guess, lable):
+def calculate_accuracy(guess, label):
     return np.sum(guess == label) / guess.shape[0]
 
 
@@ -144,36 +145,78 @@ def feedforward(inputs, weight, bias, activation_function="sigmoid"):
     :param activation_function:
     :return:
     """
-    a1 = calc(weight[0], inputs, bias[0], activation_function)
-    a2 = calc(weight[1], a1, bias[1], activation_function)
-    return calc(weight[2], a2, bias[2], activation_function)
+    z1, a1 = calc(weight[0], inputs, bias[0], activation_function)
+    z2, a2 = calc(weight[1], a1, bias[1], activation_function)
+    z3, a3 = calc(weight[2], a2, bias[2], activation_function)
+    # print(inputs)
+    # print(a3)
+    # print('----')
+    return [z1, z2, z3], [inputs, a1, a2, a3]
 
 
-def train_network(net, data, epoch_count, batch_size, eta, error_rate_func=None):
+def back_propagate():
+    pass
 
-    n = len(data)
-    for e in range(epoch_count):
-        np.random.shuffle(data)
-        for k in range(0, n, batch_size):
-            mini_batch = data[k:k + batch_size]
-            net.update(mini_batch, eta)
-            print("\rEpoch %02d, %05d instances" % (e + 1, k + batch_size), end="")
-        print()
-        if error_rate_func:
-            error_rate = error_rate_func(net)
-            print("Epoch %02d, error rate = %.2f" % (e + 1, error_rate * 100))
+
+def delta_cost_to_delta_b(l, a, y, weights, biases, dc_da):
+    """
+    d(cost)/d(w[L]) = 2 ( a[L] - y ) σ'( z[L] ) a[L-1}
+    :param l:
+    :param a:
+    :param y:
+    :param weights:
+    :param biases:
+    :return:
+    """
+    if layer == number_of_layers:
+        return 2 * np.subtract(a[l], y) * sigmoid_derivative(np.dot(weights[l - 1], a[l - 1]) + biases[l - 1].T)
+    else:
+        dc_da[l] * sigmoid_derivative(np.dot(weights[l - 1], a[l - 1]) + biases[l - 1].T)
+
+def delta_cost_to_delta_w(l, a, y, weights, biases, dc_da):
+    """
+    d(cost)/d(b[L]) = 2 ( a[L] - y ) σ'( z[L] )
+    :param l:
+    :param a:
+    :param y:
+    :param weights:
+    :param biases:
+    :return:
+    """
+    print(np.subtract(a[l], y).shape)
+    print(sigmoid_derivative(np.dot(weights[l - 1], a[l - 1]) + biases[l - 1].T).shape)
+    print(a[l - 1].shape)
+
+    if layer == number_of_layers:
+        return 2 * np.subtract(a[l], y) * sigmoid_derivative(np.dot(weights[l - 1], a[l - 1]) + biases[l - 1].T) * a[l - 1]
+    else:
+        return dc_da[l] * sigmoid_derivative(np.dot(weights[l - 1], a[l - 1]) + biases[l - 1].T) * a[l - 1]
+
+def delta_cost_to_delta_a(l, a, y, weights, biases):
+    """
+    d(cost)/d(b[L]) = 2 ( a[L] - y ) σ'( z[L] )
+    :param l:
+    :param a:
+    :param y:
+    :param weights:
+    :param biases:
+    :return:
+    """
+    return 2 * np.subtract(a[l], y) * sigmoid_derivative(np.dot(weights[l-1], a[l - 1]) + biases[l-1].T) * weights[l-1]
 
 
 if __name__ == '__main__':
+    np.set_printoptions(suppress=True)
+
     print('STEP 1: GETTING THE DATASET')
     number_of_samples = 100
 
     test_set, train_set = get_data(number_of_samples, True)
     print('\tTRAIN_SET AND TEST_SET ARE READY TO USE!')
-    print('\tPLOTTING SOME DATA:\n\t\t',end='')
+    print('\tPLOTTING SOME DATA:\n\t\t', end='')
     number_of_plotting_examples = 5
 
-    b = np.zeros(10).reshape(10, 1)
+    # b = np.zeros(10).reshape(10, 1)
 
     # print(b)
     plt.style.use("dark_background")
@@ -182,22 +225,13 @@ if __name__ == '__main__':
         plt.show()
         print('LABEL={}   '.format(np.argmax(train_set[p][1])), end='')
 
-        # print(train_set[p][1])
-        b = np.concatenate((b, train_set[p][1]), axis=1)
-
-    b = b[:, 1:]  # remove the 1st column with zeros
-
     print('\n\t\tDONE')
 
     hr()
 
     print('STEP 2: CALCULATING FEEDFORWARD OUTPUT AND INITIAL ACCURACY')
 
-    np.set_printoptions(suppress=True)
-
-    # a3 = []
-    # cost = []
-
+    '''
     # creating input and label outputs for first 100 data
     y = np.zeros(10).reshape(10, 1)
     x1 = np.zeros(784).reshape(784, 1)
@@ -213,18 +247,66 @@ if __name__ == '__main__':
     w1 = np.random.normal(npm.zeros((16, 784)), npm.ones((16, 784)))
     w2 = np.random.normal(npm.zeros((16, 16)), npm.ones((16, 16)))
     w3 = np.random.normal(npm.zeros((10, 16)), npm.ones((10, 16)))
+    weights = [w1, w2, w3]
 
     # initializing biases
     b1 = np.zeros(16)[np.newaxis]
     b2 = np.zeros(16)[np.newaxis]
     b3 = np.zeros(10)[np.newaxis]
+    biases = [b1, b2, b3]
+
+    number_of_layers = len(weights)
 
     # calculating output
-    a3 = feedforward(x1, [w1, w2, w3], [b1, b2, b3], "sigmoid")
+    a = feedforward(x1, weights, biases, "sigmoid")[3]
+
+    for ooo in a:
+        print((ooo.shape))
 
     # calculating the accuracy
-    guess = np.argmax(a3, axis=0)
+    guess = np.argmax(a, axis=0)
     label = np.argmax(y, axis=0)
+
+    print(guess)
+    print(label)
+
+    accuracy = calculate_accuracy(guess, label)
+    print('\tACCURACY : {}%'.format(accuracy * 100))
+    '''
+    label = []
+    guess = []
+
+    w1 = np.random.normal(npm.zeros((16, 784)), npm.ones((16, 784)))
+    w2 = np.random.normal(npm.zeros((16, 16)), npm.ones((16, 16)))
+    w3 = np.random.normal(npm.zeros((10, 16)), npm.ones((10, 16)))
+    weights = [w1, w2, w3]
+
+    # initializing biases
+    b1 = np.zeros(16)[np.newaxis]
+    b2 = np.zeros(16)[np.newaxis]
+    b3 = np.zeros(10)[np.newaxis]
+    biases = [b1, b2, b3]
+
+    number_of_layers = len(weights)
+
+    for p in range(100):
+        x1 = train_set[p][0]
+        y = train_set[p][1]
+        # initializing weights
+
+        # calculating output
+        a = feedforward(x1, weights, biases, "sigmoid")[1][3]
+
+        # for ooo in a:
+        #     print((ooo.shape))
+
+        # calculating the accuracy
+        guess.append(np.argmax(a, axis=0))
+        label.append(np.argmax(y, axis=0))
+
+    guess = np.array(guess)
+    label = np.array(label)
+
     accuracy = calculate_accuracy(guess, label)
     print('\tACCURACY : {}%'.format(accuracy * 100))
 
@@ -253,48 +335,128 @@ if __name__ == '__main__':
     number_of_epochs = 20
     batch_size = 10
 
+    a = []
+
     for epoch in range(number_of_epochs):
-        print('epoch #{}'.format(epoch + 1))
+        # print('epoch #{}'.format(epoch + 1))
 
         # shuffle the train set
-        np.random.shuffle(train_set)
+        # np.random.shuffle(train_set)
 
-        for batch in range(number_of_samples//batch_size):
-            print('\tbatch #{}'.format(batch + 1))
+        for batch in range(0, number_of_samples, batch_size):
 
-            # creating input and label outputs for first 100 data
-            y = np.zeros(10).reshape(10, 1)
-            x1 = np.zeros(784).reshape(784, 1)
+            grad_b = [np.zeros(b.shape) for b in biases]
+            grad_w = [np.zeros(w.shape) for w in weights]
 
-            # initializing weights
-            w1 = np.random.normal(npm.zeros((16, 784)), npm.ones((16, 784)))
-            w2 = np.random.normal(npm.zeros((16, 16)), npm.ones((16, 16)))
-            w3 = np.random.normal(npm.zeros((10, 16)), npm.ones((10, 16)))
+            mini_batch = train_set[batch:batch + batch_size]
 
-            # initializing biases
-            b1 = np.zeros(16)[np.newaxis]
-            b2 = np.zeros(16)[np.newaxis]
-            b3 = np.zeros(10)[np.newaxis]
+            label = []
+            guess = []
 
-            for p in range(batch_size):
-                x1 = np.concatenate((x1, train_set[batch + p][0]), axis=1)
-                y = np.concatenate((y, train_set[batch + p][1]), axis=1)
+            for image in mini_batch:
+                x = image[0]
+                y = image[1]
 
-            # removing the most left column
-            x1 = x1[:, 1:]
-            y = y[:, 1:]
+                z, a = feedforward(x, weights, biases, "sigmoid")
+                # REMEMBER! len(z)=3 and len(a)=4  (a: [input, a1, a2, a3])
 
-            a3 = feedforward(x1, [w1, w2, w3], [b1, b2, b3], "sigmoid")
+                delta_cost_to_delta_w3 = 2 * np.subtract(a[3], y) * sigmoid_derivative(z[2]) * a[2]
+                delta_cost_to_delta_b3 = 2 * np.subtract(a[3], y) * sigmoid_derivative(z[2])
 
-            guess = np.argmax(a3, axis=0)
-            label = np.argmax(y, axis=0)
-            print(label)
-            accuracy = calculate_accuracy(guess, label)
-            print('\t\t', accuracy*100)
-            # print(calculate_cost(a3, y))
 
+
+                # for ooo in a:
+                #     print((ooo.shape))
+
+                # calculating the accuracy
+                guess.append(np.argmax(a[3], axis=0))
+                label.append(np.argmax(y, axis=0))
+
+                # grad_a2 =
+
+                # dc_dw = []
+                # dc_db = []
+                # dc_da = []
+                #
+                # for layer in range(number_of_layers, 0, -1):
+                #     dc_da.append(delta_cost_to_delta_a(layer, a, y, weights, biases))
+                #     dc_dw.append(delta_cost_to_delta_w(layer, a, y, weights, biases, dc_da))
+                #     dc_db.append(delta_cost_to_delta_b(layer, a, y, weights, biases, dc_da))
+
+
+                    # print(layer)
+                # a.insert(0, x)
+                # guess = np.argmax(a[0])
+                # label = np.argmax(y)
+                # print(guess)
+                # print(label)
+                # for ooo in a:
+                #     print((ooo.shape))
+                # print('-'*20)
+            guess = np.array(guess)
+            label = np.array(label)
+
+            print(calculate_accuracy(guess, label))
+            print(calculate_cost(guess, label))
+
+            print('-'*20)
+
+            # print('\tbatch #{}'.format(batch + 1))
+
+            # # creating input and label outputs for first 100 data
+            # y = np.zeros(10).reshape(10, 1)
+            # x1 = np.zeros(784).reshape(784, 1)
+            #
+            # for p in range(batch_size):
+            #     x1 = np.concatenate((x1, mini_batch[p][0]), axis=1)
+            #     y = np.concatenate((y, mini_batch[p][1]), axis=1)
+            #
+            # # removing the most left column
+            # x1 = x1[:, 1:]
+            # y = y[:, 1:]
+            #
+            # # initializing weights
+            # # w1 = np.random.normal(npm.zeros((16, 784)), npm.ones((16, 784)))
+            # # w2 = np.random.normal(npm.zeros((16, 16)), npm.ones((16, 16)))
+            # # w3 = np.random.normal(npm.zeros((10, 16)), npm.ones((10, 16)))
+            # #
+            # # # initializing biases
+            # # b1 = np.zeros(16)[np.newaxis]
+            # # b2 = np.zeros(16)[np.newaxis]
+            # # b3 = np.zeros(10)[np.newaxis]
+            #
+            # a = feedforward(x1, weights, biases, "sigmoid")
+            # a.insert(0, x1)
+            # for ooo in a:
+            #     print(len(ooo))
+            #
+            # guess = np.argmax(a[2], axis=0)
+            # label = np.argmax(y, axis=0)
+            #
+            # cost = calculate_cost(a[3], y)
+            #
+            # for layer in range(number_of_layers, 0, -1):
+            #     dc_dw = delta_cost_to_delta_w(layer, a, y, weights, biases)
+            #     dc_dw = delta_cost_to_delta_w(layer, a, y, weights, biases)
+            #     # print(layer)
+            #
+            # # grad_b += 0
+            # # grad_w += 0
+            # # print(label)
+            # # print(guess)
+            # # print(a3)
+            # # print(y)
+            # accuracy = calculate_accuracy(guess, label)
+            # print('\t\t', accuracy*100)
+            # # print(calculate_cost(a3, y))
+            # print('-'*10)
+            # a.append(accuracy)
+
+    # plt.plot(a)
+    # plt.show()
 
     hr()
+
 
 
 

@@ -1,5 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy import signal
+import numpy as np
+from matplotlib import pyplot as plt
+from matplotlib import style
 
 
 # class Layer_Dense:
@@ -9,60 +13,69 @@ import matplotlib.pyplot as plt
 #     def forward(self, inputs):
 #         self.output = np.dot(inputs, self.weights) + self.biases
 #
-# # A function to plot images
-# def show_image(img):
-#     image = img.reshape((28, 28))
-#     plt.imshow(image, 'gray')
+# A function to plot images
+def show_image(img):
+    image = img[0].reshape((28, 28))
+    plt.title('LABEL = {}'.format(np.argmax(img[1])))
+
+    # plt.gcf().set_
+    plt.imshow(image, 'gray')
 
 
-# Reading The Train Set
-train_images_file = open('train-images.idx3-ubyte', 'rb')
-train_images_file.seek(4)
-num_of_train_images = int.from_bytes(train_images_file.read(4), 'big')
-train_images_file.seek(16)
+def get_data(number_of_data, flag):
+    # Reading The Train Set
+    train_images_file = open('train-images.idx3-ubyte', 'rb')
+    train_images_file.seek(4)
+    num_of_train_images = int.from_bytes(train_images_file.read(4), 'big')
+    train_images_file.seek(16)
 
-train_labels_file = open('train-labels.idx1-ubyte', 'rb')
-train_labels_file.seek(8)
+    train_labels_file = open('train-labels.idx1-ubyte', 'rb')
+    train_labels_file.seek(8)
 
-train_set = []
-for n in range(100):
-    image = np.zeros((784, 1))
-    for i in range(784):
-        image[i, 0] = int.from_bytes(train_images_file.read(1), 'big') / 256
+    if flag:
+        num_of_train_images = number_of_data
 
-    label_value = int.from_bytes(train_labels_file.read(1), 'big')
-    label = np.zeros((10, 1))
-    label[label_value, 0] = 1
+    train_set = []
+    for n in range(num_of_train_images):
+        image = np.zeros((784, 1))
+        for i in range(784):
+            image[i, 0] = int.from_bytes(train_images_file.read(1), 'big') / 256
 
-
-    train_set.append((image, label))
-    # print(train_set[n][1])
-    # show_image(train_set[n][0])
-    # plt.show()
-
-# Reading The Test Set
-test_images_file = open('t10k-images.idx3-ubyte', 'rb')
-test_images_file.seek(4)
-
-test_labels_file = open('t10k-labels.idx1-ubyte', 'rb')
-test_labels_file.seek(8)
-
-num_of_test_images = int.from_bytes(test_images_file.read(4), 'big')
-test_images_file.seek(16)
-
-test_set = []
-for n in range(100):
-    image = np.zeros((784, 1))
-    for i in range(784):
-        image[i] = int.from_bytes(test_images_file.read(1), 'big') / 256
-
-    label_value = int.from_bytes(test_labels_file.read(1), 'big')
-    label = np.zeros((10, 1))
-    label[label_value, 0] = 1
-
-    test_set.append((image, label))
+        label_value = int.from_bytes(train_labels_file.read(1), 'big')
+        label = np.zeros((10, 1))
+        label[label_value, 0] = 1
 
 
+        train_set.append((image, label))
+        # print(train_set[n][1])
+
+
+
+    # Reading The Test Set
+    test_images_file = open('t10k-images.idx3-ubyte', 'rb')
+    test_images_file.seek(4)
+
+    test_labels_file = open('t10k-labels.idx1-ubyte', 'rb')
+    test_labels_file.seek(8)
+
+    num_of_test_images = int.from_bytes(test_images_file.read(4), 'big')
+    test_images_file.seek(16)
+
+    if flag:
+        num_of_test_images = number_of_data
+
+    test_set = []
+    for n in range(num_of_test_images):
+        image = np.zeros((784, 1))
+        for i in range(784):
+            image[i] = int.from_bytes(test_images_file.read(1), 'big') / 256
+
+        label_value = int.from_bytes(test_labels_file.read(1), 'big')
+        label = np.zeros((10, 1))
+        label[label_value, 0] = 1
+
+        test_set.append((image, label))
+    return test_set, train_set
 
 # Plotting an image
 # show_image(train_set[1][0])
@@ -82,82 +95,82 @@ import numpy as np
 import struct
 
 
-def read_image_and_label_data(image_archive_filename,
-                              label_archive_filename,
-                              max_pairs=None):
-    """
-    Reads image and label data. This returns a list of pairs (x, y) where
-    x is a 785-dimensional vector (a numpy.ndarray) representing
-    the image and y is a 10-dimensional one-hot vector (a numpy.ndarray)
-    representing the label.
+# def read_image_and_label_data(image_archive_filename,
+#                               label_archive_filename,
+#                               max_pairs=None):
+#     """
+#     Reads image and label data. This returns a list of pairs (x, y) where
+#     x is a 785-dimensional vector (a numpy.ndarray) representing
+#     the image and y is a 10-dimensional one-hot vector (a numpy.ndarray)
+#     representing the label.
 
-    If max_pairs is None or less than one, reads all the images and labels in
-    the archives. Otherwise reads max_pairs number of images and labels
-    (or all available pairs).
-    Function courtesy of Marco Kuhlmann (http://www.ida.liu.se/~marku61/)
-    """
+#     If max_pairs is None or less than one, reads all the images and labels in
+#     the archives. Otherwise reads max_pairs number of images and labels
+#     (or all available pairs).
+#     Function courtesy of Marco Kuhlmann (http://www.ida.liu.se/~marku61/)
+#     """
 
-    with gzip.open(image_archive_filename) as img_file, \
-            gzip.open(label_archive_filename) as lab_file:
-        yield from ((vectorize_image(image), vectorize_label(label))
-                    for image, label in zip(read_images(img_file, max_pairs),
-                                            read_labels(lab_file, max_pairs)))
-
-
-def read_images(input_stream, max_images=None):
-    """
-    Reads images from the input source. Returns a generator for those images.
-    If max_images is None or less than one, reads all images from the input
-    source. Otherwise reads max_images number of images (or all available images).
-    Function courtesy of Marco Kuhlmann (http://www.ida.liu.se/~marku61/)
-    """
-
-    magic = struct.unpack('>BBBB', input_stream.read(4))
-    assert magic[0] == 0 and magic[1] == 0 and magic[2] == 8 and magic[3] == 3
-
-    img_count = struct.unpack('>i', input_stream.read(4))[0]
-    if max_images is not None and max_images >= 1:
-        img_count = np.minimum(img_count, max_images)
-
-    row_count = struct.unpack('>i', input_stream.read(4))[0]
-    col_count = struct.unpack('>i', input_stream.read(4))[0]
-    pixel_count = row_count * col_count
-    for i in range(img_count):
-        yield struct.unpack('>%dB' % pixel_count, input_stream.read(pixel_count))
+#     with gzip.open(image_archive_filename) as img_file, \
+#             gzip.open(label_archive_filename) as lab_file:
+#         yield from ((vectorize_image(image), vectorize_label(label))
+#                     for image, label in zip(read_images(img_file, max_pairs),
+#                                             read_labels(lab_file, max_pairs)))
 
 
-def read_labels(input_stream, max_labels=None):
-    """
-    Reads labels from the input source. Returns a generator for those labels.
-    If max_labels is None or less than one, reads all labels from the input
-    source. Otherwise reads max_labels number of labels (or all available labels).
-    Function courtesy of Marco Kuhlmann (http://www.ida.liu.se/~marku61/)
-    """
+# def read_images(input_stream, max_images=None):
+#     """
+#     Reads images from the input source. Returns a generator for those images.
+#     If max_images is None or less than one, reads all images from the input
+#     source. Otherwise reads max_images number of images (or all available images).
+#     Function courtesy of Marco Kuhlmann (http://www.ida.liu.se/~marku61/)
+#     """
 
-    magic = struct.unpack('>BBBB', input_stream.read(4))
-    assert magic[0] == 0 and magic[1] == 0 and magic[2] == 8 and magic[3] == 1
+#     magic = struct.unpack('>BBBB', input_stream.read(4))
+#     assert magic[0] == 0 and magic[1] == 0 and magic[2] == 8 and magic[3] == 3
 
-    label_count = struct.unpack('>i', input_stream.read(4))[0]
-    if max_labels is not None and max_labels >= 1:
-        label_count = np.minimum(label_count, max_labels)
+#     img_count = struct.unpack('>i', input_stream.read(4))[0]
+#     if max_images is not None and max_images >= 1:
+#         img_count = np.minimum(img_count, max_images)
 
-    for i in range(label_count):
-        yield struct.unpack('>B', input_stream.read(1))[0]
+#     row_count = struct.unpack('>i', input_stream.read(4))[0]
+#     col_count = struct.unpack('>i', input_stream.read(4))[0]
+#     pixel_count = row_count * col_count
+#     for i in range(img_count):
+#         yield struct.unpack('>%dB' % pixel_count, input_stream.read(pixel_count))
 
 
-def vectorize_image(image):
-    """
-    Maps an MNIST image to a vector (a numpy.ndarray). An MNIST image
-    is a 784-component tuple of integers between 0 and 255,
-    representing greyscale values. The resulting vector is a
-    785-dimensional column vector: The first component of the vector
-    is 1; the remaining 784 components represent the greyscale
-    values. Each greyscale value is normalized to the interval [0, 1].
-    Function courtesy of Marco Kuhlmann (http://www.ida.liu.se/~marku61/)
-    """
+# def read_labels(input_stream, max_labels=None):
+#     """
+#     Reads labels from the input source. Returns a generator for those labels.
+#     If max_labels is None or less than one, reads all labels from the input
+#     source. Otherwise reads max_labels number of labels (or all available labels).
+#     Function courtesy of Marco Kuhlmann (http://www.ida.liu.se/~marku61/)
+#     """
 
-    image = (255,) + image  # First component will become 1.
-    return np.reshape(np.array(image, dtype=float), (785, 1)) / 255
+#     magic = struct.unpack('>BBBB', input_stream.read(4))
+#     assert magic[0] == 0 and magic[1] == 0 and magic[2] == 8 and magic[3] == 1
+
+#     label_count = struct.unpack('>i', input_stream.read(4))[0]
+#     if max_labels is not None and max_labels >= 1:
+#         label_count = np.minimum(label_count, max_labels)
+
+#     for i in range(label_count):
+#         yield struct.unpack('>B', input_stream.read(1))[0]
+
+
+# def vectorize_image(image):
+#     """
+#     Maps an MNIST image to a vector (a numpy.ndarray). An MNIST image
+#     is a 784-component tuple of integers between 0 and 255,
+#     representing greyscale values. The resulting vector is a
+#     785-dimensional column vector: The first component of the vector
+#     is 1; the remaining 784 components represent the greyscale
+#     values. Each greyscale value is normalized to the interval [0, 1].
+#     Function courtesy of Marco Kuhlmann (http://www.ida.liu.se/~marku61/)
+#     """
+
+#     image = (255,) + image  # First component will become 1.
+#     return np.reshape(np.array(image, dtype=float), (785, 1)) / 255
 
 
 def vectorize_label(label):
@@ -184,8 +197,8 @@ class Network(object):
                  sizes,
                  activation_func,
                  activation_func_derivative,
-                 initial_weights_func,
-                 use_softmax=True):
+                 initial_weights_func):
+                 # use_softmax=True):
         """
         Constructor.
         Create and initialize weights, setup structures for storing
@@ -196,13 +209,19 @@ class Network(object):
         self.sizes = sizes
         self.activation_func = activation_func
         self.activation_func_derivative = activation_func_derivative
-        self.use_softmax = use_softmax
+        # self.use_softmax = use_softmax
 
         # Must have at least one hidden layer.
         # Initialize weights.
-        assert (len(self.sizes) >= 3)
+        # assert (len(self.sizes) >= 3)
+
         self.w = [initial_weights_func(n_out, n_in)
                   for n_out, n_in in zip(self.sizes[1:], self.sizes[:-1])]
+        print(len(self.w))
+        self.w[0] = np.random.normal(np.zeros((16, 784)), np.ones((16, 784)))
+        self.w[1] = np.random.normal(np.zeros((16, 16)), np.ones((16, 16)))
+        self.w[2] = np.random.normal(np.zeros((10, 16)), np.ones((10, 16)))
+
 
         # Note that we have a dummy entry in the inputs (z) list here.
         # The input layer has no inputs, but we have an entry for
@@ -236,11 +255,11 @@ class Network(object):
             # Output layer.
         # Only softmax or sigmoid activation functions make sense for the output layer.
         self.z[-1] = np.dot(self.w[-1], self.y[-2])
-        if self.use_softmax:
-            self.y[-1] = softmax(self.z[-1])
-        else:
-            self.y[-1] = np.divide(1.0, np.add(1.0, np.exp(np.multiply(-1.0, self.z))))
-
+        # if self.use_softmax:
+        #     self.y[-1] = softmax(self.z[-1])
+        # else:
+        #     self.y[-1] = np.divide(1.0, np.add(1.0, np.exp(np.multiply(-1.0, self.z))))
+        self.y[-1] = sigmoid(self.z[-1])
         # Return the output layer values.
         return self.y[-1]
 
@@ -250,17 +269,18 @@ class Network(object):
         gradients for all samples in the batch and then update the weights using the learning rate.
         """
 
-        # Extract image data from batch.
         x = [batch[i][0] for i in range(len(batch))]
         y_target = [batch[i][1] for i in range(len(batch))]
+
         sum_grad_w = [np.zeros(w.shape) for w in self.w]
-        for i in range(len(x)):
+        sum_grad_b = [np.zeros(b.shape) for b in self.w]
+        for image in range(len(x)):
             # The output layer is already stored in self.y[-1] so we don't need to store the
             # return value here.
-            self.feedforward(x[i])
+            self.feedforward(x[image])
 
             # Compute and accumulate error gradients.
-            grad_w = self._backpropagate(y_target[i])
+            grad_w = self.backpropagate(y_target[image])
             for j in range(len(grad_w)):
                 sum_grad_w[j] += grad_w[j]
 
@@ -268,7 +288,7 @@ class Network(object):
         for i in range(len(self.w)):
             self.w[i] = np.subtract(self.w[i], np.multiply(eta, sum_grad_w[i]))
 
-    def _backpropagate(self, t):
+    def backpropagate(self, t):
         """
         Compute the weight gradients based on the intermediate values from the latest call to
         feedforward.
@@ -297,12 +317,12 @@ class Network(object):
         return grad
 
 
-def softmax(x):
-    """
-    x is a numpy.ndarray. Returns the softmax for each input element.
-    """
-    e_x = np.exp(x - x.max())
-    return e_x / e_x.sum()
+# def softmax(x):
+#     """
+#     x is a numpy.ndarray. Returns the softmax for each input element.
+#     """
+#     e_x = np.exp(x - x.max())
+#     return e_x / e_x.sum()
 
 
 def sigmoid(z):
@@ -359,15 +379,13 @@ def tanh_initial_weights(n_out, n_in):
                              size=(n_out, n_in))
 
 
-
-
-
 def train_network(net, data, epoch_count, batch_size, eta, error_rate_func=None):
     """
     Train the provided network using the provided data, number of epochs, batch size, and
     learning rate. Reports the error rate between each epoch.
     Function courtesy of Marco Kuhlmann (http://www.ida.liu.se/~marku61/)
     """
+    err = []
     n = len(data)
     for e in range(epoch_count):
         np.random.shuffle(data)
@@ -378,7 +396,10 @@ def train_network(net, data, epoch_count, batch_size, eta, error_rate_func=None)
         print()
         if error_rate_func:
             error_rate = error_rate_func(net)
-            print("Epoch %02d, error rate = %.2f" % (e + 1, error_rate * 100))
+            err.append(error_rate)
+            print("Epoch %02d, error rate = %.2f " % (e + 1, error_rate))
+    plt.plot(err)
+    plt.show()
 
 
 def get_error_rate(net, error_data):
@@ -396,7 +417,7 @@ def get_error_rate(net, error_data):
         if np.argmax(y_hat, axis=0) != np.argmax(label, axis=0):
             error_count += 1.0
 
-    return error_count / len(test_data)
+    return error_count / len(test_set)
 
 
 def network_sizes(input_layer_size, output_layer_size, hidden_layer_sizes):
@@ -421,33 +442,62 @@ if __name__ == "__main__":
     Read data, train network, print error rate.
     """
 
-    TRAINING_COUNT = 50  # Use all training data.
-    training_images_archive_filename = "train-images-idx3-ubyte.gz"
-    training_labels_archive_filename = "train-labels-idx1-ubyte.gz"
-    training_data = list(read_image_and_label_data(training_images_archive_filename,
-                                                   training_labels_archive_filename,
-                                                   max_pairs=TRAINING_COUNT))
-    print("Number of instances from training data: {0}".format(len(training_data)))
+    np.set_printoptions(suppress=True)
 
-    TEST_COUNT = 100  # Use all test data.
-    test_images_archive_filename = "t10k-images-idx3-ubyte.gz"
-    test_labels_archive_filename = "t10k-labels-idx1-ubyte.gz"
-    test_data = list(read_image_and_label_data(test_images_archive_filename,
-                                               test_labels_archive_filename,
-                                               max_pairs=TEST_COUNT))
-    print("Number of instances from test data: {0}".format(len(test_data)))
+    print('STEP 1: GETTING THE DATASET')
+    number_of_samples = 100
+
+    test_set, train_set = get_data(number_of_samples, True)
+    print('\tTRAIN_SET AND TEST_SET ARE READY TO USE!')
+    print('\tPLOTTING SOME DATA:\n\t\t', end='')
+    number_of_plotting_examples = 5
+
+    # b = np.zeros(10).reshape(10, 1)
+
+    # print(b)
+    plt.style.use("dark_background")
+    # for p in range(number_of_plotting_examples):
+    #     show_image(train_set[p])
+    #     plt.show()
+    #     print('LABEL={}   '.format(np.argmax(train_set[p][1])), end='')
+
+    print('\n\t\tDONE')
+
+    # TRAINING_COUNT = 100  # Use all training data.
+    # training_images_archive_filename = "train-images-idx3-ubyte.gz"
+    # training_labels_archive_filename = "train-labels-idx1-ubyte.gz"
+    # training_data = list(read_image_and_label_data(training_images_archive_filename,
+    #                                                training_labels_archive_filename,
+    #                                                max_pairs=TRAINING_COUNT))
+    # print("Number of instances from training data: {0}".format(len(training_data)))
+    # print("Number of instances from training data: {0}".format(len(test_set)))
+
+    # print(training_data[0][1])
+    # print('---')
+    
+    # print(train_set[0][1])
+
+    
+
+    # TEST_COUNT = 100  # Use all test data.
+    # test_images_archive_filename = "t10k-images-idx3-ubyte.gz"
+    # test_labels_archive_filename = "t10k-labels-idx1-ubyte.gz"
+    # test_data = list(read_image_and_label_data(test_images_archive_filename,
+    #                                            test_labels_archive_filename,
+    #                                            max_pairs=TEST_COUNT))
+    # print("Number of instances from test data: {0}".format(len(test_data)))
 
     # Make sure we always use the same seed so that we can compare results  between runs.
-    np.random.seed(1234)
+    # np.random.seed(1234)
 
     # Settings.
-    EPOCH_COUNT = 5
+    EPOCH_COUNT = 10
     BATCH_SIZE = 20
-    LEARNING_RATE = 0.1
-    INPUT_LAYER_SIZE = 785
+    LEARNING_RATE = 1
+    INPUT_LAYER_SIZE = 784
     OUTPUT_LAYER_SIZE = 10
     HIDDEN_LAYER_SIZES = [16, 16]
-    USE_SOFTMAX = True
+    # USE_SOFTMAX = False
     ACTIVATION_FUNC = sigmoid
     ACTIVATION_FUNC_DERIVATIVE = sigmoid_derivative
     INITIAL_WEIGHTS_FUNC = sigmoid_initial_weights
@@ -463,21 +513,19 @@ if __name__ == "__main__":
     # ACTIVATION_FUNC_DERIVATIVE = relu_derivative
     # INITIAL_WEIGHTS_FUNC = relu_initial_weights
 
-    network = Network(sizes=network_sizes(INPUT_LAYER_SIZE,
-                                          OUTPUT_LAYER_SIZE,
-                                          HIDDEN_LAYER_SIZES),
+    network = Network(sizes=network_sizes(INPUT_LAYER_SIZE, OUTPUT_LAYER_SIZE, HIDDEN_LAYER_SIZES),
                       activation_func=ACTIVATION_FUNC,
                       activation_func_derivative=ACTIVATION_FUNC_DERIVATIVE,
-                      initial_weights_func=INITIAL_WEIGHTS_FUNC,
-                      use_softmax=USE_SOFTMAX)
+                      initial_weights_func=INITIAL_WEIGHTS_FUNC)
+                      # use_softmax=USE_SOFTMAX)
     train_network(network,
-                  training_data,
-                  # test_set,
+                #   training_data,
+                  train_set,
                   epoch_count=EPOCH_COUNT,
                   batch_size=BATCH_SIZE,
                   eta=LEARNING_RATE,
                   # error_rate_func=lambda n: get_error_rate(n, test_set))
-                  error_rate_func=lambda n: get_error_rate(n, test_data))
+                  error_rate_func=lambda n: get_error_rate(n, train_set))
 
 
 
