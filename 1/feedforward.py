@@ -18,8 +18,6 @@ biases = [b1, b2, b3]
 def show_image(img):
     image = img[0].reshape((28, 28))
     plt.title('LABEL = {}'.format(np.argmax(img[1])))
-
-    # plt.gcf().set_
     plt.imshow(image, 'gray')
 
 

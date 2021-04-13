@@ -68,74 +68,74 @@ costs = []
 print(len(train))
 
 for i in range(epoch_num):
-    cost = 0
-    random.shuffle(train)
-    j = 0
-    while j < 100:
+    # cost = 0
+    # random.shuffle(train)
+    # j = 0
+    # while j < 100:
         # print(j, j+10)
-        batch = train[j: j+10]
-        grad_w3 = np.zeros((10, 16))
-        grad_w2 = np.zeros((16, 16))
-        grad_w1 = np.zeros((16, 784))
-        grad_a1 = np.zeros((16, 1))
-        grad_a2 = np.zeros((16, 1))
-        grad_a3 = np.zeros((10, 1))
-        grad_b1 = np.zeros((16, 1))
-        grad_b2 = np.zeros((16, 1))
-        grad_b3 = np.zeros((10, 1))
+        # batch = train[j: j+10]
+        # grad_w3 = np.zeros((10, 16))
+        # grad_w2 = np.zeros((16, 16))
+        # grad_w1 = np.zeros((16, 784))
+        # grad_a1 = np.zeros((16, 1))
+        # grad_a2 = np.zeros((16, 1))
+        # grad_a3 = np.zeros((10, 1))
+        # grad_b1 = np.zeros((16, 1))
+        # grad_b2 = np.zeros((16, 1))
+        # grad_b3 = np.zeros((10, 1))
 
         for img in batch:
-            z1 = (w1 @ img[0]) + b1
-            a1 = np.asarray([sigmoid(i) for i in z1]).reshape((16, 1))
-            z2 = (w2 @ a1) + b2
-            a2 = np.asarray([sigmoid(i) for i in z2]).reshape((16, 1))
-            z3 = (w3 @ a2) + b3
-            a3 = np.asarray([sigmoid(i) for i in z3]).reshape((10, 1))
+            # z1 = (w1 @ img[0]) + b1
+            # a1 = np.asarray([sigmoid(i) for i in z1]).reshape((16, 1))
+            # z2 = (w2 @ a1) + b2
+            # a2 = np.asarray([sigmoid(i) for i in z2]).reshape((16, 1))
+            # z3 = (w3 @ a2) + b3
+            # a3 = np.asarray([sigmoid(i) for i in z3]).reshape((10, 1))
 
             # derivatives
-            for x in range(10):
-                for y in range(16):
-                    grad_w3[x, y] += a2[y, 0] * sigmoid_derivative(z3[x, 0]) * (2 * a3[x, 0] - 2 * img[1][x, 0])
-
-            for x in range(10):
-                grad_b3[x, 0] += sigmoid_derivative(z3[x, 0]) * (2 * a3[x, 0] - 2 * img[1][x, 0])
-
-            for x in range(16):
-                for y in range(10):
-                    grad_a2[x, 0] += w3[y, x] * sigmoid_derivative(z3[y, 0]) * (2 * a3[y, 0] - 2 * img[1][y])
-
-            for x in range(16):
-                for y in range(16):
-                    grad_w2[x, y] += grad_a2[x, 0] * sigmoid_derivative(z2[x, 0]) * a1[y, 0]
-
-            for x in range(16):
-                grad_b2[x, 0] += sigmoid_derivative(z2[x, 0]) * grad_a2[x, 0]
-
-            for x in range(16):
-                for y in range(10):
-                    grad_a1[x, 0] += w2[y, x] * sigmoid_derivative(z2[y, 0]) * grad_a2[y, 0]
-
-            for x in range(16):
-                for y in range(784):
-                    grad_w1[x, y] += grad_a1[x, 0] * sigmoid_derivative(z1[x, 0]) * img[0][y]
-
-            for x in range(16):
-                grad_b1[x, 0] += sigmoid_derivative(z1[x, 0]) * grad_a1[x, 0]
+            # for x in range(10):
+            #     for y in range(16):
+            #         grad_w3[x, y] += a2[y, 0] * sigmoid_derivative(z3[x, 0]) * (2 * a3[x, 0] - 2 * img[1][x, 0])
+            #
+            # for x in range(10):
+            #     grad_b3[x, 0] += sigmoid_derivative(z3[x, 0]) * (2 * a3[x, 0] - 2 * img[1][x, 0])
+            #
+            # for x in range(16):
+            #     for y in range(10):
+            #         grad_a2[x, 0] += w3[y, x] * sigmoid_derivative(z3[y, 0]) * (2 * a3[y, 0] - 2 * img[1][y])
+            #
+            # for x in range(16):
+            #     for y in range(16):
+            #         grad_w2[x, y] += grad_a2[x, 0] * sigmoid_derivative(z2[x, 0]) * a1[y, 0]
+            #
+            # for x in range(16):
+            #     grad_b2[x, 0] += sigmoid_derivative(z2[x, 0]) * grad_a2[x, 0]
+            #
+            # for x in range(16):
+            #     for y in range(10):
+            #         grad_a1[x, 0] += w2[y, x] * sigmoid_derivative(z2[y, 0]) * grad_a2[y, 0]
+            #
+            # for x in range(16):
+            #     for y in range(784):
+            #         grad_w1[x, y] += grad_a1[x, 0] * sigmoid_derivative(z1[x, 0]) * img[0][y]
+            #
+            # for x in range(16):
+            #     grad_b1[x, 0] += sigmoid_derivative(z1[x, 0]) * grad_a1[x, 0]
 
             # cost
-            c = 0
-            for x in range(10):
-                c += (img[1][x, 0] - a3[x, 0]) ** 2
-            cost += c
+            # c = 0
+            # for x in range(10):
+            #     c += (img[1][x, 0] - a3[x, 0]) ** 2
+            # cost += c
 
         # update the w
         # update the b
-        w3 -= grad_w3 / batch_size
-        w2 -= grad_w2 / batch_size
-        w1 -= grad_w1 / batch_size
-        b3 -= grad_b3 / batch_size
-        b2 -= grad_b2 / batch_size
-        b1 -= grad_b1 / batch_size
+        # w3 -= grad_w3 / batch_size
+        # w2 -= grad_w2 / batch_size
+        # w1 -= grad_w1 / batch_size
+        # b3 -= grad_b3 / batch_size
+        # b2 -= grad_b2 / batch_size
+        # b1 -= grad_b1 / batch_size
         j += 10
 
     print("average cost:", cost / 100)
