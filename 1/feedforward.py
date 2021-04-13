@@ -3,16 +3,16 @@ import matplotlib.pyplot as plt
 import numpy.matlib as npm
 
 
-class NeuralNetwork:
-    def __init__(self, sizes, activation_func, activation_func_derivative, initial_weights_func):
-        self.sizes = sizes
-        self.activation_func = activation_func
-        self.activation_func_derivative = activation_func_derivative
-        pass
+w1 = np.random.normal(npm.zeros((16, 784)), npm.ones((16, 784)))
+w2 = np.random.normal(npm.zeros((16, 16)), npm.ones((16, 16)))
+w3 = np.random.normal(npm.zeros((10, 16)), npm.ones((10, 16)))
+weights = [w1, w2, w3]
 
-
-    def feedforward(self, x):
-        pass
+# initializing biases
+b1 = np.zeros(16)[np.newaxis]
+b2 = np.zeros(16)[np.newaxis]
+b3 = np.zeros(10)[np.newaxis]
+biases = [b1, b2, b3]
 
 
 def show_image(img):
@@ -129,7 +129,7 @@ def calculate_cost(a_j, y_j):
     return np.power(np.subtract(a_j, y_j), 2).sum(axis=0)
 
 
-def feedforward(inputs, weight, bias, activation_function="sigmoid"):
+def feedforward(inputs, activation_function="sigmoid"):
     """
     + - - - +         + - - - - +         + - - - - +         + - - - - +
     |  x1   |         |  a1_1   |         |  a2_1   |         |  a3_1   |
@@ -145,87 +145,158 @@ def feedforward(inputs, weight, bias, activation_function="sigmoid"):
     :param activation_function:
     :return:
     """
-    z1, a1 = calc(weight[0], inputs, bias[0], activation_function)
-    z2, a2 = calc(weight[1], a1, bias[1], activation_function)
-    z3, a3 = calc(weight[2], a2, bias[2], activation_function)
+    z1, a1 = calc(weights[0], inputs, biases[0], activation_function)
+    z2, a2 = calc(weights[1], a1, biases[1], activation_function)
+    z3, a3 = calc(weights[2], a2, biases[2], activation_function)
     # print(inputs)
     # print(a3)
     # print('----')
     return [z1, z2, z3], [inputs, a1, a2, a3]
 
 
-def back_propagate():
-    pass
-
-
-def delta_cost_to_delta_b(l, a, y, weights, biases, dc_da):
+def back_propagate(x, y):
     """
     d(cost)/d(w[L]) = 2 ( a[L] - y ) σ'( z[L] ) a[L-1}
-    :param l:
-    :param a:
-    :param y:
-    :param weights:
-    :param biases:
-    :return:
-    """
-    if layer == number_of_layers:
-        return 2 * np.subtract(a[l], y) * sigmoid_derivative(np.dot(weights[l - 1], a[l - 1]) + biases[l - 1].T)
-    else:
-        dc_da[l] * sigmoid_derivative(np.dot(weights[l - 1], a[l - 1]) + biases[l - 1].T)
-
-def delta_cost_to_delta_w(l, a, y, weights, biases, dc_da):
-    """
     d(cost)/d(b[L]) = 2 ( a[L] - y ) σ'( z[L] )
-    :param l:
-    :param a:
+
+    :param x:
     :param y:
-    :param weights:
-    :param biases:
     :return:
     """
-    print(np.subtract(a[l], y).shape)
-    print(sigmoid_derivative(np.dot(weights[l - 1], a[l - 1]) + biases[l - 1].T).shape)
-    print(a[l - 1].shape)
+    db = [np.zeros(b.shape) for b in biases]
+    dw = [np.zeros(w.shape) for w in weights]
+    z, a = feedforward(x)
+    # print(len(a))
+    a = a[1:]
+    # print(len(a))
+    # delta = 2 * (a[-1] - y) * sigmoid_derivative(z[-1])
+    delta = 2 * np.subtract(a[-1], y) * sigmoid_derivative(z[-1])
+    db[-1] = delta
+    dw[-1] = np.dot(delta, a[-2].transpose())
 
-    if layer == number_of_layers:
-        return 2 * np.subtract(a[l], y) * sigmoid_derivative(np.dot(weights[l - 1], a[l - 1]) + biases[l - 1].T) * a[l - 1]
-    else:
-        return dc_da[l] * sigmoid_derivative(np.dot(weights[l - 1], a[l - 1]) + biases[l - 1].T) * a[l - 1]
+    for layer in range(2, number_of_layers):
+        delta = np.dot(weights[-layer + 1].transpose(), delta) * sigmoid_derivative(z[-layer])
 
-def delta_cost_to_delta_a(l, a, y, weights, biases):
-    """
-    d(cost)/d(b[L]) = 2 ( a[L] - y ) σ'( z[L] )
-    :param l:
-    :param a:
-    :param y:
-    :param weights:
-    :param biases:
-    :return:
-    """
-    return 2 * np.subtract(a[l], y) * sigmoid_derivative(np.dot(weights[l-1], a[l - 1]) + biases[l-1].T) * weights[l-1]
+        db[-layer] = delta
+        dw[-layer] = np.dot(delta, a[-layer - 1].transpose())
+
+        # print(db.shape)
+        # print(dw.shape)
+
+    return dw, db, np.argmax(a[2], axis=0)
+
+
+# def delta_cost_to_delta_b(l, a, y, weights, biases, dc_da):
+#     """
+#     d(cost)/d(w[L]) = 2 ( a[L] - y ) σ'( z[L] ) a[L-1}
+#     :param l:
+#     :param a:
+#     :param y:
+#     :param weights:
+#     :param biases:
+#     :return:
+#     """
+#     if layer == number_of_layers:
+#         return 2 * np.subtract(a[l], y) * sigmoid_derivative(np.dot(weights[l - 1], a[l - 1]) + biases[l - 1].T)
+#     else:
+#         dc_da[l] * sigmoid_derivative(np.dot(weights[l - 1], a[l - 1]) + biases[l - 1].T)
+#
+# def delta_cost_to_delta_w(l, a, y, weights, biases, dc_da):
+#     """
+#     d(cost)/d(b[L]) = 2 ( a[L] - y ) σ'( z[L] )
+#     :param l:
+#     :param a:
+#     :param y:
+#     :param weights:
+#     :param biases:
+#     :return:
+#     """
+#     print(np.subtract(a[l], y).shape)
+#     print(sigmoid_derivative(np.dot(weights[l - 1], a[l - 1]) + biases[l - 1].T).shape)
+#     print(a[l - 1].shape)
+#
+#     if layer == number_of_layers:
+#         return 2 * np.subtract(a[l], y) * sigmoid_derivative(np.dot(weights[l - 1], a[l - 1]) + biases[l - 1].T) * a[l - 1]
+#     else:
+#         return dc_da[l] * sigmoid_derivative(np.dot(weights[l - 1], a[l - 1]) + biases[l - 1].T) * a[l - 1]
+#
+# def delta_cost_to_delta_a(l, a, y, weights, biases):
+#     """
+#     d(cost)/d(b[L]) = 2 ( a[L] - y ) σ'( z[L] )
+#     :param l:
+#     :param a:
+#     :param y:
+#     :param weights:
+#     :param biases:
+#     :return:
+#     """
+#     return 2 * np.subtract(a[l], y) * sigmoid_derivative(np.dot(weights[l-1], a[l - 1]) + biases[l-1].T) * weights[l-1]
+
+def updateMiniBatch(miniBatch, lr):
+    global biases, weights
+
+    nablaB = [np.zeros(b.shape) for b in biases]
+    nablaW = [np.zeros(w.shape) for w in weights]
+
+    print(len(nablaB))
+    print(len(nablaW))
+
+    cost = 0
+    for x, y in miniBatch:
+        deltaNablaB, deltaNablaW, output = back_propagate(x, y)
+
+        # print((deltaNablaB.shape))
+        # print((deltaNablaW.shape))
+        #
+        # print((nablaB.shape))
+        # print((nablaW.shape))
+
+
+        # print(len(deltaNablaB))
+        # print(len(deltaNablaW))
+        #
+        # print(len(nablaB))
+        # print(len(nablaW))
+
+        cost += (output - y) ** 2
+        print('ssssssssssssssssssss')
+        # for nb, dnb in zip(nablaB, deltaNablaB):
+        #     print(nb.shape)
+        #     print(dnb.shape)
+        #     print()
+        #
+        # for nw, dnw in zip(nablaW, deltaNablaW):
+        #     print(nw.shape)
+        #     print(dnw.shape)
+        #     print()
+
+        # nablaB = [nb @ dnb for nb, dnb in zip(nablaB, deltaNablaB)]
+        # nablaW = [nw @ dnw for nw, dnw in zip(nablaW, deltaNablaW)]
+
+    weights = [w - lr / len(miniBatch) * nw for w, nw in zip(weights, nablaW)]
+    biases = [b - lr / len(miniBatch) * nb for b, nb in zip(biases, nablaB)]
+
+    return cost
 
 
 if __name__ == '__main__':
     np.set_printoptions(suppress=True)
-
     print('STEP 1: GETTING THE DATASET')
     number_of_samples = 100
-
     test_set, train_set = get_data(number_of_samples, True)
+    test_set, train_set = np.array(test_set), np.array(train_set)
+
     print('\tTRAIN_SET AND TEST_SET ARE READY TO USE!')
     print('\tPLOTTING SOME DATA:\n\t\t', end='')
     number_of_plotting_examples = 5
-
-    # b = np.zeros(10).reshape(10, 1)
-
-    # print(b)
     plt.style.use("dark_background")
-    for p in range(number_of_plotting_examples):
-        show_image(train_set[p])
-        plt.show()
-        print('LABEL={}   '.format(np.argmax(train_set[p][1])), end='')
 
-    print('\n\t\tDONE')
+    # for p in range(number_of_plotting_examples):
+    #     show_image(train_set[p])
+    #     plt.show()
+    #     print('LABEL={}   '.format(np.argmax(train_set[p][1])), end='')
+    #
+    # print('\n\t\tDONE')
 
     hr()
 
@@ -276,17 +347,6 @@ if __name__ == '__main__':
     label = []
     guess = []
 
-    w1 = np.random.normal(npm.zeros((16, 784)), npm.ones((16, 784)))
-    w2 = np.random.normal(npm.zeros((16, 16)), npm.ones((16, 16)))
-    w3 = np.random.normal(npm.zeros((10, 16)), npm.ones((10, 16)))
-    weights = [w1, w2, w3]
-
-    # initializing biases
-    b1 = np.zeros(16)[np.newaxis]
-    b2 = np.zeros(16)[np.newaxis]
-    b3 = np.zeros(10)[np.newaxis]
-    biases = [b1, b2, b3]
-
     number_of_layers = len(weights)
 
     for p in range(100):
@@ -295,7 +355,7 @@ if __name__ == '__main__':
         # initializing weights
 
         # calculating output
-        a = feedforward(x1, weights, biases, "sigmoid")[1][3]
+        a = feedforward(x1, "sigmoid")[1][3]
 
         # for ooo in a:
         #     print((ooo.shape))
@@ -303,16 +363,17 @@ if __name__ == '__main__':
         # calculating the accuracy
         guess.append(np.argmax(a, axis=0))
         label.append(np.argmax(y, axis=0))
-
+        # print("\t\rGuess: %1d - Label: %1d" % (np.argmax(a, axis=0), np.argmax(y, axis=0)), end="")
     guess = np.array(guess)
     label = np.array(label)
-
     accuracy = calculate_accuracy(guess, label)
-    print('\tACCURACY : {}%'.format(accuracy * 100))
+    print('\n\tACCURACY : {}%'.format(accuracy * 100))
 
     hr()
 
     print('STEP 3: IMPLEMENTING BACK-PROPAGATION')
+    # test_set, train_set = np.array(test_set), np.array(train_set)
+    # trainingData = list(zip(train_set[:, 0], train_set[:, 1]))
 
     """
         Pseudo Code:
@@ -335,71 +396,169 @@ if __name__ == '__main__':
     number_of_epochs = 20
     batch_size = 10
 
-    a = []
-
+    # errors = [0 for x in range(number_of_epochs)]
+    errors = []
     for epoch in range(number_of_epochs):
-        # print('epoch #{}'.format(epoch + 1))
-
         # shuffle the train set
+        np.random.shuffle(train_set)
+        cost = 0
+        for b in range(0, number_of_samples, batch_size):
+            batch = train_set[b:b + batch_size]
+            grad_w3 = np.zeros((10, 16))
+            grad_w2 = np.zeros((16, 16))
+            grad_w1 = np.zeros((16, 784))
+
+            grad_a1 = np.zeros((16, 1))
+            grad_a2 = np.zeros((16, 1))
+            grad_a3 = np.zeros((10, 1))
+
+            grad_b1 = np.zeros((16, 1))
+            grad_b2 = np.zeros((16, 1))
+            grad_b3 = np.zeros((10, 1))
+
+            for img in batch:
+                # z1 = (w1 @ img[0]) + b1
+                # a1 = np.asarray([sigmoid(i) for i in z1]).reshape((16, 1))
+                # z2 = (w2 @ a1) + b2
+                # a2 = np.asarray([sigmoid(i) for i in z2]).reshape((16, 1))
+                # z3 = (w3 @ a2) + b3
+                # a3 = np.asarray([sigmoid(i) for i in z3]).reshape((10, 1))
+
+                z1 = (weights[0] @ img[0]) + b1
+                a1 = np.asarray([sigmoid(i) for i in z1])
+                z2 = (weights[1] @ a1) + b2
+                a2 = np.asarray([sigmoid(i) for i in z2])
+                z3 = (weights[2] @ a2) + b3
+                a3 = np.asarray([sigmoid(i) for i in z3])
+
+                # derivatives
+                for x in range(10):
+                    for y in range(16):
+                        grad_w3[x, y] += a2[y, 0] * sigmoid_derivative(z3[x, 0]) * (2 * a3[x, 0] - 2 * img[1][x, 0])
+
+                for x in range(10):
+                    grad_b3[x, 0] += sigmoid_derivative(z3[x, 0]) * (2 * a3[x, 0] - 2 * img[1][x, 0])
+
+                for x in range(16):
+                    for y in range(10):
+                        grad_a2[x, 0] += w3[y, x] * sigmoid_derivative(z3[y, 0]) * (2 * a3[y, 0] - 2 * img[1][y])
+
+                for x in range(16):
+                    for y in range(16):
+                        grad_w2[x, y] += grad_a2[x, 0] * sigmoid_derivative(z2[x, 0]) * a1[y, 0]
+
+                for x in range(16):
+                    grad_b2[x, 0] += sigmoid_derivative(z2[x, 0]) * grad_a2[x, 0]
+
+                for x in range(16):
+                    for y in range(10):
+                        grad_a1[x, 0] += w2[y, x] * sigmoid_derivative(z2[y, 0]) * grad_a2[y, 0]
+
+                for x in range(16):
+                    for y in range(784):
+                        grad_w1[x, y] += grad_a1[x, 0] * sigmoid_derivative(z1[x, 0]) * img[0][y]
+
+                for x in range(16):
+                    grad_b1[x, 0] += sigmoid_derivative(z1[x, 0]) * grad_a1[x, 0]
+
+                # cost
+                c = 0
+                for x in range(10):
+                    c += (img[1][x, 0] - a3[x, 0]) ** 2
+                cost += c
+
+                # update the w
+                # update the b
+            weights[2] -= grad_w3 / batch_size
+            weights[1] -= grad_w2 / batch_size
+            weights[0] -= grad_w1 / batch_size
+            biases[2] -= grad_b3 / batch_size
+            biases[1] -= grad_b2 / batch_size
+            biases[0] -= grad_b1 / batch_size
+        print(cost/100)
+        errors.append(cost)
+
+    plt.plot(errors)
+    plt.show()
+        # # shuffle the train set
         # np.random.shuffle(train_set)
 
-        for batch in range(0, number_of_samples, batch_size):
+        # batches = [trainingData[k: k + batch_size] for k in range(0, len(trainingData), batch_size)]
+        #
+        # for batch in batches:
+        #     costBatch = updateMiniBatch(batch, learning_rate)
+        #     errors[epoch] += costBatch
+        #
+        # errors = [x / len(trainingData) for x in errors]
 
-            grad_b = [np.zeros(b.shape) for b in biases]
-            grad_w = [np.zeros(w.shape) for w in weights]
+    # print(errors[1])
+    #
+    # plt.plot(errors[1])
+    # print(errors)
+    # plt.show()
+        # for batch in range(0, number_of_samples, batch_size):
+        #
+        #     costBatch = updateMiniBatch(train_set[batch:batch + batch_size], learning_rate)
+        #     errors[epoch] += costBatch
 
-            mini_batch = train_set[batch:batch + batch_size]
+            # grad_b = [np.zeros(b.shape) for b in biases]
+            # grad_w = [np.zeros(w.shape) for w in weights]
+            #
+            # mini_batch = train_set[batch:batch + batch_size]
+            #
+            # label = []
+            # guess = []
+            #
+            # for image in mini_batch:
+            #     x = image[0]
+            #     y = image[1]
+            #
+            #     # print(x.shape, y.shape)
+            #
+            #     z, a = feedforward(x, weights, biases, "sigmoid")
+            #     # REMEMBER! len(z)=3 and len(a)=4  (a: [input, a1, a2, a3])
+            #
+            #     # delta_cost_to_delta_w3 = 2 * np.subtract(a[3], y) * sigmoid_derivative(z[2]) * a[2]
+            #     # delta_cost_to_delta_b3 = 2 * np.subtract(a[3], y) * sigmoid_derivative(z[2])
+            #
+            #     # delta_cost_to_delta_w3 = 2 * np.subtract(a[3]- y) * sigmoid_derivative(z[2]) * a[2]
+            #     # delta_cost_to_delta_b3 = 2 * np.subtract(a[3], y) * sigmoid_derivative(z[2])
+            #
+            #     # for ooo in a:
+            #     #     print((ooo.shape))
+            #
+            #     # calculating the accuracy
+            #     guess.append(np.argmax(a[3], axis=0))
+            #     label.append(np.argmax(y, axis=0))
+            #
+            #     # grad_a2 =
+            #
+            #     # dc_dw = []
+            #     # dc_db = []
+            #     # dc_da = []
+            #     #
+            #     # for layer in range(number_of_layers, 0, -1):
+            #     #     dc_da.append(delta_cost_to_delta_a(layer, a, y, weights, biases))
+            #     #     dc_dw.append(delta_cost_to_delta_w(layer, a, y, weights, biases, dc_da))
+            #     #     dc_db.append(delta_cost_to_delta_b(layer, a, y, weights, biases, dc_da))
+            #
+            #
+            #         # print(layer)
+            #     # a.insert(0, x)
+            #     # guess = np.argmax(a[0])
+            #     # label = np.argmax(y)
+            #     # print(guess)
+            #     # print(label)
+            #     # for ooo in a:
+            #     #     print((ooo.shape))
+            #     # print('-'*20)
+            # guess = np.array(guess)
+            # label = np.array(label)
 
-            label = []
-            guess = []
-
-            for image in mini_batch:
-                x = image[0]
-                y = image[1]
-
-                z, a = feedforward(x, weights, biases, "sigmoid")
-                # REMEMBER! len(z)=3 and len(a)=4  (a: [input, a1, a2, a3])
-
-                delta_cost_to_delta_w3 = 2 * np.subtract(a[3], y) * sigmoid_derivative(z[2]) * a[2]
-                delta_cost_to_delta_b3 = 2 * np.subtract(a[3], y) * sigmoid_derivative(z[2])
-
-
-
-                # for ooo in a:
-                #     print((ooo.shape))
-
-                # calculating the accuracy
-                guess.append(np.argmax(a[3], axis=0))
-                label.append(np.argmax(y, axis=0))
-
-                # grad_a2 =
-
-                # dc_dw = []
-                # dc_db = []
-                # dc_da = []
-                #
-                # for layer in range(number_of_layers, 0, -1):
-                #     dc_da.append(delta_cost_to_delta_a(layer, a, y, weights, biases))
-                #     dc_dw.append(delta_cost_to_delta_w(layer, a, y, weights, biases, dc_da))
-                #     dc_db.append(delta_cost_to_delta_b(layer, a, y, weights, biases, dc_da))
-
-
-                    # print(layer)
-                # a.insert(0, x)
-                # guess = np.argmax(a[0])
-                # label = np.argmax(y)
-                # print(guess)
-                # print(label)
-                # for ooo in a:
-                #     print((ooo.shape))
-                # print('-'*20)
-            guess = np.array(guess)
-            label = np.array(label)
-
-            print(calculate_accuracy(guess, label))
-            print(calculate_cost(guess, label))
-
-            print('-'*20)
+            # print(calculate_accuracy(guess, label))
+            # print(calculate_cost(guess, label))
+            #
+            # print('-'*20)
 
             # print('\tbatch #{}'.format(batch + 1))
 
