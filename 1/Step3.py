@@ -19,7 +19,9 @@ biases = [b1, b2, b3]
 
 
 class NeuralNetwork:
-    def __init__(self, learning_rate, number_of_epochs, batch_size, train_set, weights, biases, number_of_samples):
+    def __init__(self, learning_rate, number_of_epochs, batch_size,
+                 train_set, weights, biases, number_of_samples,
+                 activation_function, activation_function_derivative):
         self.learning_rate = learning_rate
         self.number_of_epochs = number_of_epochs
         self.batch_size = batch_size
@@ -27,6 +29,8 @@ class NeuralNetwork:
         self.weights = weights
         self.biases = biases
         self.number_of_samples = number_of_samples
+        self.activation_function = activation_function
+        self.activation_function_derivative = activation_function_derivative
 
     def feedforward(self, img):
         z1 = (weights[0] @ img[0]) + biases[0]
@@ -34,42 +38,42 @@ class NeuralNetwork:
         # for z in z1:
         #     print(z)
 
-        a1 = np.asarray([sigmoid(z[0]) for z in z1]).reshape((16, 1))
+        a1 = np.asarray([self.activation_function(z[0]) for z in z1]).reshape((16, 1))
         z2 = (weights[1] @ a1) + biases[1]
-        a2 = np.asarray([sigmoid(z[0]) for z in z2]).reshape((16, 1))
+        a2 = np.asarray([self.activation_function(z[0]) for z in z2]).reshape((16, 1))
         z3 = (weights[2] @ a2) + biases[2]
-        a3 = np.asarray([sigmoid(z[0]) for z in z3]).reshape((10, 1))
+        a3 = np.asarray([self.activation_function(z[0]) for z in z3]).reshape((10, 1))
         return [a1, a2, a3], [z1, z2, z3]
 
     def back_propagation(self, grad_w, grad_b, grad_a,  a, z, img):
         for x in range(10):
             for y in range(16):
-                grad_w[2][x, y] += a[1][y, 0] * sigmoid_derivative(z[2][x, 0]) * (2 * a[2][x, 0] - 2 * img[1][x, 0])
+                grad_w[2][x, y] += a[1][y, 0] * self.activation_function_derivative(z[2][x, 0]) * (2 * a[2][x, 0] - 2 * img[1][x, 0])
 
         for x in range(10):
-            grad_b[2][x, 0] += sigmoid_derivative(z[2][x, 0]) * (2 * a[2][x, 0] - 2 * img[1][x, 0])
+            grad_b[2][x, 0] += self.activation_function_derivative(z[2][x, 0]) * (2 * a[2][x, 0] - 2 * img[1][x, 0])
 
         for x in range(16):
             for y in range(10):
-                grad_a[1][x, 0] += w3[y, x] * sigmoid_derivative(z[2][y, 0]) * (2 * a[2][y, 0] - 2 * img[1][y])
+                grad_a[1][x, 0] += w3[y, x] * self.activation_function_derivative(z[2][y, 0]) * (2 * a[2][y, 0] - 2 * img[1][y])
 
         for x in range(16):
             for y in range(16):
-                grad_w[1][x, y] += grad_a[1][x, 0] * sigmoid_derivative(z[1][x, 0]) * a[0][y, 0]
+                grad_w[1][x, y] += grad_a[1][x, 0] * self.activation_function_derivative(z[1][x, 0]) * a[0][y, 0]
 
         for x in range(16):
-            grad_b[1][x, 0] += sigmoid_derivative(z[1][x, 0]) * grad_a[1][x, 0]
+            grad_b[1][x, 0] += self.activation_function_derivative(z[1][x, 0]) * grad_a[1][x, 0]
 
         for x in range(16):
             for y in range(10):
-                grad_a[0][x, 0] += w2[y, x] * sigmoid_derivative(z[1][y, 0]) * grad_a[1][y, 0]
+                grad_a[0][x, 0] += w2[y, x] * self.activation_function_derivative(z[1][y, 0]) * grad_a[1][y, 0]
 
         for x in range(16):
             for y in range(784):
-                grad_w[0][x, y] += grad_a[0][x, 0] * sigmoid_derivative(z[0][x, 0]) * img[0][y]
+                grad_w[0][x, y] += grad_a[0][x, 0] * self.activation_function_derivative(z[0][x, 0]) * img[0][y]
 
         for x in range(16):
-            grad_b[0][x, 0] += sigmoid_derivative(z[0][x, 0]) * grad_a[0][x, 0]
+            grad_b[0][x, 0] += self.activation_function_derivative(z[0][x, 0]) * grad_a[0][x, 0]
 
         return grad_w, grad_b, grad_a
 
@@ -181,6 +185,7 @@ class NeuralNetwork:
         #
         # plt.show()
 
+
 if __name__ == '__main__':
     np.set_printoptions(suppress=True)
     plt.style.use("dark_background")
@@ -188,9 +193,10 @@ if __name__ == '__main__':
     print('step 1: getting the dataset'.upper())
     test_set, train_set = get_data(number_of_samples, True)
     hr()
-
+    activation_function_derivative = activation_functions_derivative['sigmoid']
+    activation_function = activation_functions['sigmoid']
     learning_rate = 1
-    number_of_epochs = 20
+    number_of_epochs = 2
     batch_size = 10
     net = NeuralNetwork(learning_rate=learning_rate,
                         number_of_epochs=number_of_epochs,
@@ -198,7 +204,9 @@ if __name__ == '__main__':
                         train_set=train_set,
                         weights=weights,
                         biases=biases,
-                        number_of_samples=number_of_samples)
+                        number_of_samples=number_of_samples,
+                        activation_function_derivative=activation_function_derivative,
+                        activation_function=activation_function)
 
     print('step 2: calculating initial accuracy'.upper())
     print('\tinitial accuracy: {}%'.format(net.calculate_accuracy() * 100))

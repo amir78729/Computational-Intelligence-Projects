@@ -6,6 +6,7 @@ import matplotlib
 import math
 
 
+
 def show_image(img):
     image = img[0].reshape((28, 28))
     plt.title('LABEL = {}'.format(np.argmax(img[1])))
@@ -47,6 +48,25 @@ def tanh_derivative(z):
     f_z = tanh(z)
     return np.subtract(1.0, np.multiply(f_z, f_z))
 
+
+def relu():
+    pass
+
+def relu_derivative():
+    pass
+
+
+activation_functions_derivative = {
+    'sigmoid': sigmoid_derivative,
+    'tanh': tanh_derivative,
+    'relu': relu_derivative
+}
+
+activation_functions = {
+    'sigmoid': sigmoid,
+    'tanh': tanh,
+    'relu': relu
+}
 
 def get_data(number_of_data, flag):
     # Reading The Train Set
