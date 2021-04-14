@@ -1,8 +1,6 @@
 from AdditionalFunctions import *
 import numpy.matlib as npm
-import numpy
-import random
-import matplotlib
+import time
 
 # initializing wights
 w1 = np.random.normal(npm.zeros((16, 784)), npm.ones((16, 784)))
@@ -185,9 +183,12 @@ class NeuralNetwork:
 
 if __name__ == '__main__':
     np.set_printoptions(suppress=True)
-    number_of_samples = 100
-    test_set, train_set = get_data(number_of_samples, True)
     plt.style.use("dark_background")
+    number_of_samples = 100
+    print('step 1: getting the dataset'.upper())
+    test_set, train_set = get_data(number_of_samples, True)
+    hr()
+
     learning_rate = 1
     number_of_epochs = 20
     batch_size = 10
@@ -199,8 +200,12 @@ if __name__ == '__main__':
                         biases=biases,
                         number_of_samples=number_of_samples)
 
-    print(net.calculate_accuracy())
-    net.train_network()
+    print('step 2: calculating initial accuracy'.upper())
+    print('\tinitial accuracy: {}%'.format(net.calculate_accuracy() * 100))
     hr()
+    start_time = time.time()
+    net.train_network()
+    stop_time = time.time()
+    print('\n\ttraining process completed in {}s'.format(round(stop_time - start_time)).upper())
     accuracy = net.calculate_accuracy()
-    print('the accuracy of the network is {}%'.format(accuracy * 100).upper())
+    print('\tthe accuracy of the network is {}%'.format(accuracy * 100).upper())

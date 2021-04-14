@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="309072f8-80bc-4b6f-b763-a9752dc86d24" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AdditionalFunctions.py" beforeDir="false" afterPath="$PROJECT_DIR$/AdditionalFunctions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CI.py" beforeDir="false" afterPath="$PROJECT_DIR$/CI.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Step3.py" beforeDir="false" afterPath="$PROJECT_DIR$/Step3.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backpropagation.py" beforeDir="false" afterPath="$PROJECT_DIR$/backpropagation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/feedforward.py" beforeDir="false" afterPath="$PROJECT_DIR$/feedforward.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -20,8 +17,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6613">
-              <caret line="394" column="28" selection-start-line="394" selection-start-column="27" selection-end-line="394" selection-end-column="28" />
+            <state relative-caret-position="23">
+              <caret line="367" column="50" lean-forward="true" selection-start-line="352" selection-end-line="367" selection-end-column="50" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -32,35 +29,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/feedforward.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6154">
-              <caret line="362" column="16" selection-end-line="621" />
+            <state relative-caret-position="202">
+              <caret line="300" column="53" lean-forward="true" selection-start-line="300" selection-start-column="53" selection-end-line="300" selection-end-column="53" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/CI.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3519">
-              <caret line="207" column="72" selection-start-column="2" selection-end-line="326" selection-end-column="12" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/backpropagation.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="128">
-              <caret line="149" column="2" lean-forward="true" selection-start-line="149" selection-start-column="2" selection-end-line="149" selection-end-column="2" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Step3.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="177">
-              <caret line="158" lean-forward="true" selection-start-line="158" selection-end-line="158" />
+            <state relative-caret-position="2445">
+              <caret line="211" selection-start-line="211" selection-end-line="211" />
               <folding>
                 <element signature="e#0#33#0" expanded="true" />
               </folding>
@@ -68,11 +50,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/AdditionalFunctions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="91">
-              <caret line="90" column="10" selection-start-line="90" selection-start-column="10" selection-end-line="90" selection-end-column="10" />
+            <state relative-caret-position="332">
+              <caret line="47" column="50" selection-start-line="47" selection-start-column="50" selection-end-line="47" selection-end-column="50" />
               <folding>
                 <element signature="e#45#63#0" expanded="true" />
               </folding>
@@ -91,8 +73,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>dc_dw</find>
-      <find>zeros</find>
       <find>biases</find>
       <find>getFinal</find>
       <find>[</find>
@@ -121,6 +101,8 @@
       <find>28500222</find>
       <find>%</find>
       <find>guess_the_number</find>
+      <find>datk</find>
+      <find>dark</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -141,10 +123,10 @@
         <option value="$PROJECT_DIR$/Final version/additional_functions.py" />
         <option value="$PROJECT_DIR$/Final version/Step3.py" />
         <option value="$PROJECT_DIR$/backpropagation.py" />
-        <option value="$PROJECT_DIR$/feedforward.py" />
         <option value="$PROJECT_DIR$/CI.py" />
-        <option value="$PROJECT_DIR$/AdditionalFunctions.py" />
+        <option value="$PROJECT_DIR$/feedforward.py" />
         <option value="$PROJECT_DIR$/Step3.py" />
+        <option value="$PROJECT_DIR$/AdditionalFunctions.py" />
       </list>
     </option>
   </component>
@@ -373,22 +355,23 @@
       <workItem from="1617703501478" duration="12846000" />
       <workItem from="1618228485185" duration="9387000" />
       <workItem from="1618238716118" duration="36541000" />
-      <workItem from="1618396583942" duration="6368000" />
+      <workItem from="1618396583942" duration="11143000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="135539000" />
+    <option name="totallyTimeSpent" value="140314000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.15521424" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.16134752" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.2109929" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39893618" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -402,9 +385,9 @@
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="SciView" order="3" sideWeight="0.9408034" visible="true" weight="0.40905416" />
+      <window_info anchor="right" id="SciView" order="3" sideWeight="0.93483144" visible="true" weight="0.19967663" />
       <window_info anchor="right" id="Database" order="4" />
-      <window_info anchor="right" x="0" y="0" width="273" height="495" id="Documentation" order="5" sideWeight="0.059196617" side_tool="true" visible="true" weight="0.40905416" />
+      <window_info anchor="right" x="0" y="0" width="273" height="495" id="Documentation" order="5" sideWeight="0.06516854" side_tool="true" visible="true" weight="0.19967663" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -413,7 +396,7 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/1$feedforward.coverage" NAME="feedforward Coverage Results" MODIFIED="1618345070774" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/1$Main.coverage" NAME="Main Coverage Results" MODIFIED="1618229054218" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/1$Step3.coverage" NAME="Step3 Coverage Results" MODIFIED="1618404038708" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Final version" />
+    <SUITE FILE_PATH="coverage/1$Step3.coverage" NAME="Step3 Coverage Results" MODIFIED="1618406641875" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Final version" />
     <SUITE FILE_PATH="coverage/1$CI.coverage" NAME="CI Coverage Results" MODIFIED="1618238000573" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="editorHistoryManager">
@@ -441,26 +424,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6613">
-          <caret line="394" column="28" selection-start-line="394" selection-start-column="27" selection-end-line="394" selection-end-column="28" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/feedforward.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6154">
-          <caret line="362" column="16" selection-end-line="621" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/CI.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3519">
+        <state relative-caret-position="60">
           <caret line="207" column="72" selection-start-column="2" selection-end-line="326" selection-end-column="12" />
         </state>
       </provider>
@@ -472,22 +438,42 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/AdditionalFunctions.py">
+    <entry file="file://$PROJECT_DIR$/Step3.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="91">
-          <caret line="90" column="10" selection-start-line="90" selection-start-column="10" selection-end-line="90" selection-end-column="10" />
+        <state relative-caret-position="2445">
+          <caret line="211" selection-start-line="211" selection-end-line="211" />
           <folding>
-            <element signature="e#45#63#0" expanded="true" />
+            <element signature="e#0#33#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Step3.py">
+    <entry file="file://$PROJECT_DIR$/feedforward.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="177">
-          <caret line="158" lean-forward="true" selection-start-line="158" selection-end-line="158" />
+        <state relative-caret-position="202">
+          <caret line="300" column="53" lean-forward="true" selection-start-line="300" selection-start-column="53" selection-end-line="300" selection-end-column="53" />
           <folding>
-            <element signature="e#0#33#0" expanded="true" />
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="23">
+          <caret line="367" column="50" lean-forward="true" selection-start-line="352" selection-end-line="367" selection-end-column="50" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AdditionalFunctions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="332">
+          <caret line="47" column="50" selection-start-line="47" selection-start-column="50" selection-end-line="47" selection-end-column="50" />
+          <folding>
+            <element signature="e#45#63#0" expanded="true" />
           </folding>
         </state>
       </provider>
