@@ -2,6 +2,7 @@
 # import random
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib
 import math
 
 
@@ -26,7 +27,8 @@ def sigmoid_derivative(z):
     :return: σ'(z) = σ(z)(1 - σ(z))
     """
     s = sigmoid(z)
-    return np.multiply(s, np.subtract(1.0, s))
+    return s * (1 - s)
+    # return np.multiply(s, np.subtract(1.0, s))
 
 
 def get_data(number_of_data, flag):
@@ -86,7 +88,8 @@ def get_data(number_of_data, flag):
 
 
 def hr():
-    print('\n', '- ' * 40, '\n')
+    print()
+    print('- ' * 40, '\n')
 
 
 

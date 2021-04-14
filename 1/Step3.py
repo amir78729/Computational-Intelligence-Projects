@@ -2,14 +2,15 @@ from AdditionalFunctions import *
 import numpy.matlib as npm
 import numpy
 import random
+import matplotlib
 
 # initializing wights
-# w1 = np.random.normal(npm.zeros((16, 784)), npm.ones((16, 784)))
-# w2 = np.random.normal(npm.zeros((16, 16)), npm.ones((16, 16)))
-# w3 = np.random.normal(npm.zeros((10, 16)), npm.ones((10, 16)))
-w1 = np.random.randn(16, 784)
-w2 = np.random.randn(16, 16)
-w3 = np.random.randn(10, 16)
+w1 = np.random.normal(npm.zeros((16, 784)), npm.ones((16, 784)))
+w2 = np.random.normal(npm.zeros((16, 16)), npm.ones((16, 16)))
+w3 = np.random.normal(npm.zeros((10, 16)), npm.ones((10, 16)))
+# w1 = np.random.randn(16, 784)
+# w2 = np.random.randn(16, 16)
+# w3 = np.random.randn(10, 16)
 weights = [w1, w2, w3]
 
 # initializing biases
@@ -74,8 +75,16 @@ class NeuralNetwork:
 
         return grad_w, grad_b, grad_a
 
-    def update(self):
-        pass
+    def calculate_accuracy(self):
+        number_of_correct_guesses = 0
+        for image in range(self.number_of_samples):
+            guess = np.argmax(self.feedforward(self.train_set[image])[0][-1])
+            label = np.argmax(self.train_set[image][1])
+            number_of_correct_guesses = number_of_correct_guesses + 1 if guess == label else number_of_correct_guesses
+        return number_of_correct_guesses / self.number_of_samples
+
+
+
 
     def train_network(self):
         """
@@ -94,12 +103,16 @@ class NeuralNetwork:
                         W = W - (learning_rate × (grad_W / batch_size))
                         b = b - (learning_rate × (grad_b / batch_size))
         """
+        print('training the network: \n'.upper())
         errors = []
+        accuracy = []
         for i in range(self.number_of_epochs):
-            print('\repoch %d' % (i+1), end='')
             epoch_cost = 0
             np.random.shuffle(self.train_set)
+
+            batch_count = 0
             for j in range(0, self.number_of_samples, self.batch_size):
+                batch_count += 1
                 batch = self.train_set[j:j + self.batch_size]
 
                 grad_w3 = np.zeros((10, 16))
@@ -117,50 +130,67 @@ class NeuralNetwork:
                 grad_a3 = np.zeros((10, 1))
                 grad_a = [grad_a1, grad_a2, grad_a3]
 
-                for img in batch:
-                    a, z = self.feedforward(img)
-                    grad_w, grad_b, grad_a = self.back_propagation(grad_w, grad_b, grad_a,  a, z, img)
+                for img in range(self.batch_size):
+                    # for img in batch:
+                    print('\r\tEPOCH: %02d/%02d\t\tBATCH: %03d/%03d\t\tIMAGE: %04d/%04d\t\t' % (i + 1, self.number_of_epochs, batch_count, number_of_samples // batch_size, img+1, batch_size), end='')
+                    a, z = self.feedforward(batch[img])
+                    grad_w, grad_b, grad_a = self.back_propagation(grad_w, grad_b, grad_a,  a, z, batch[img])
                     c = 0
                     for x in range(10):
-                        c += (img[1][x, 0] - a[2][x, 0]) ** 2
+                        c += (batch[img][1][x, 0] - a[2][x, 0]) ** 2
                     epoch_cost += c
 
-                # self.weights[2] -= grad_w[2] / self.batch_size
-                # self.weights[1] -= grad_w[1] / self.batch_size
-                # self.weights[0] -= grad_w[0] / self.batch_size
-                #
-                # self.biases[2] -= grad_b[2].T / self.batch_size
-                # self.biases[1] -= grad_b[1].T / self.batch_size
-                # self.biases[0] -= grad_b[0].T / self.batch_size
 
                 for x in range(3):
                     self.weights[x] -= grad_w[x] / self.batch_size
                     self.biases[x] -= grad_b[x].T / self.batch_size
 
+            errors.append(epoch_cost / number_of_samples)
+            accuracy.append(self.calculate_accuracy())
+            print('EPOCH COMPLETED!')
 
-            errors.append(epoch_cost)
         plt.plot(errors, 'g')
-        plt.xlabel("Epoch")
-        plt.ylabel("Error")
-        plt.title('Error in Training Process')
+        plt.xlabel("Epoch", color='yellow')
+        plt.ylabel("Error", color='yellow')
+        plt.title('Error in Training Process', color='yellow')
         plt.grid(color='green', linestyle='--', linewidth=0.5)
+
         plt.show()
 
+        # plt.plot(accuracy, 'r', linestyle="--")
+        # plt.xlabel("Epoch", color='orange')
+        # plt.ylabel("Error", color='orange')
+        # plt.title('Accuracy in Training Process', color='yellow')
+        # plt.grid(color='red', linestyle='--', linewidth=0.5)
+        # plt.show()
+
+        # fig, (ax1, ax2) = plt.subplots(1, 2)
+        # # fig.suptitle('Plotting Accuracy and Cost in the Training Process\n')
+        # fig.set_size_inches(8.0, 4.0)
+        # # fig.tight_layout(pad=10)
+        # # fig.subplots_adjust(top=30.0)
+        # ax1.plot(errors, 'g')
+        # ax1.set(xlabel="Epoch", ylabel='Cost')
+        # # ax1.set_title('Error in Training Process', color='yellow')
+        # ax1.grid(color='green', linestyle='--', linewidth=0.5)
+        #
+        # ax2.plot(accuracy, 'r', linestyle="--")
+        # ax2.set(xlabel="Epoch", ylabel='Accuracy')
+        # # ax2.set_title('Accuracy in Training Process', color='yellow')
+        # ax2.grid(color='orange', linestyle='--', linewidth=0.5)
+        #
+        # # plt.subplots_adjust(top=10)
+        #
+        # plt.show()
 
 if __name__ == '__main__':
     np.set_printoptions(suppress=True)
-
     number_of_samples = 100
     test_set, train_set = get_data(number_of_samples, True)
-    # test_set, train_set = np.array(test_set), np.array(train_set)
-
     plt.style.use("dark_background")
-
-
     learning_rate = 1
-    number_of_epochs = 5
+    number_of_epochs = 20
     batch_size = 10
-    number_of_samples = 5
     net = NeuralNetwork(learning_rate=learning_rate,
                         number_of_epochs=number_of_epochs,
                         batch_size=batch_size,
@@ -168,4 +198,9 @@ if __name__ == '__main__':
                         weights=weights,
                         biases=biases,
                         number_of_samples=number_of_samples)
+
+    print(net.calculate_accuracy())
     net.train_network()
+    hr()
+    accuracy = net.calculate_accuracy()
+    print('the accuracy of the network is {}%'.format(accuracy * 100).upper())
