@@ -80,6 +80,7 @@ def get_data(number_of_data, flag):
         num_of_train_images = number_of_data
     train_set = []
     for n in range(num_of_train_images):
+        print('\r\tTRAIN SET: %05d/%05d' % (n+1, num_of_train_images), end='')
         image = np.zeros((784, 1))
         for i in range(784):
             image[i, 0] = int.from_bytes(train_images_file.read(1), 'big') / 256
@@ -87,7 +88,7 @@ def get_data(number_of_data, flag):
         label = np.zeros((10, 1))
         label[label_value, 0] = 1
         train_set.append((image, label))
-
+    print('\tDONE')
     # Reading The Test Set
     test_images_file = open('t10k-images.idx3-ubyte', 'rb')
     test_images_file.seek(4)
@@ -99,6 +100,7 @@ def get_data(number_of_data, flag):
         num_of_test_images = number_of_data
     test_set = []
     for n in range(num_of_test_images):
+        print('\r\tTEST  SET: %05d/%05d' % (n + 1, num_of_test_images), end='')
         image = np.zeros((784, 1))
         for i in range(784):
             image[i] = int.from_bytes(test_images_file.read(1), 'big') / 256
@@ -107,6 +109,7 @@ def get_data(number_of_data, flag):
         label = np.zeros((10, 1))
         label[label_value, 0] = 1
         test_set.append((image, label))
+    print("\tDONE")
     plt.style.use("dark_background")
 
     fig, axes = plt.subplots(1, 5)

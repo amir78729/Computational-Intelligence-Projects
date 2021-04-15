@@ -561,16 +561,16 @@ if __name__ == '__main__':
             # print('\tbatch #{}'.format(batch + 1))
 
             # # creating input and label outputs for first 100 data
-            # y = np.zeros(10).reshape(10, 1)
-            # x1 = np.zeros(784).reshape(784, 1)
-            #
-            # for p in range(batch_size):
-            #     x1 = np.concatenate((x1, mini_batch[p][0]), axis=1)
-            #     y = np.concatenate((y, mini_batch[p][1]), axis=1)
-            #
-            # # removing the most left column
-            # x1 = x1[:, 1:]
-            # y = y[:, 1:]
+            y = np.zeros(10).reshape(10, 1)
+            x1 = np.zeros(784).reshape(784, 1)
+
+            for p in range(batch_size):
+                x1 = np.concatenate((x1, mini_batch[p][0]), axis=1)
+                y = np.concatenate((y, mini_batch[p][1]), axis=1)
+
+            # removing the most left column
+            x1 = x1[:, 1:]
+            y = y[:, 1:]
             #
             # # initializing weights
             # # w1 = np.random.normal(npm.zeros((16, 784)), npm.ones((16, 784)))

@@ -3,22 +3,6 @@ import numpy.matlib as npm
 import matplotlib.pyplot as plt
 
 
-
-# # initializing wights
-# w1 = np.random.normal(npm.zeros((16, 784)), npm.ones((16, 784)))
-# w2 = np.random.normal(npm.zeros((16, 16)), npm.ones((16, 16)))
-# w3 = np.random.normal(npm.zeros((10, 16)), npm.ones((10, 16)))
-# # w1 = np.random.randn(16, 784)
-# # w2 = np.random.randn(16, 16)
-# # w3 = np.random.randn(10, 16)
-# weights = [w1, w2, w3]
-#
-# # initializing biases
-# b1 = np.zeros(16)[np.newaxis]
-# b2 = np.zeros(16)[np.newaxis]
-# b3 = np.zeros(10)[np.newaxis]
-# biases = [b1, b2, b3]
-
 class NeuralNetwork:
     def __init__(self, learning_rate, number_of_epochs, batch_size,
                  train_set, number_of_samples,
@@ -26,7 +10,7 @@ class NeuralNetwork:
         self.learning_rate = learning_rate
         self.number_of_epochs = number_of_epochs
         self.batch_size = batch_size
-        self.train_set = train_set
+        self.set = train_set
 
         # initializing wights
         w1 = np.random.normal(npm.zeros((16, 784)), npm.ones((16, 784)))
@@ -41,6 +25,9 @@ class NeuralNetwork:
         b1 = np.zeros(16)[np.newaxis]
         b2 = np.zeros(16)[np.newaxis]
         b3 = np.zeros(10)[np.newaxis]
+        # b1 = np.zeros((16, 1))
+        # b2 = np.zeros((16, 1))
+        # b3 = np.zeros((10, 1))
         b = [b1, b2, b3]
 
         self.weights = w
@@ -51,16 +38,35 @@ class NeuralNetwork:
 
     def feedforward(self, img):
         z1 = (self.weights[0] @ img[0]) + self.biases[0]
-
-        # for z in z1:
-        #     print(z)
-
         a1 = np.asarray([self.activation_function(z[0]) for z in z1]).reshape((16, 1))
         z2 = (self.weights[1] @ a1) + self.biases[1]
         a2 = np.asarray([self.activation_function(z[0]) for z in z2]).reshape((16, 1))
         z3 = (self.weights[2] @ a2) + self.biases[2]
         a3 = np.asarray([self.activation_function(z[0]) for z in z3]).reshape((10, 1))
         return [a1, a2, a3], [z1, z2, z3]
+
+    def feedforward_vectorized(self, img):
+        # print(self.weights[0].shape)
+        # print(img[0].shape)
+        z1 = np.add(np.dot(self.weights[0], img.T), self.biases[0].T)
+        a1 = self.activation_function(z1)
+        # a1 = np.asarray([self.activation_function(z) for z in z1]).reshape((16, 10))
+
+        z2 = np.add(np.dot(self.weights[1], a1), self.biases[1].T)
+        a2 = self.activation_function(z2)
+
+        z3 = np.add(np.dot(self.weights[2], a2), self.biases[2].T)
+        a3 = self.activation_function(z3)
+
+        # z1 = (w0 @ img[0]) + b0
+        # a1 = self.activation_function(z1)
+        # z2 = (w1 @ a1) + b1
+        # a2 = self.activation_function(z2)
+        # z3 = (w2 @ a2) + b2
+        # a3 = self.activation_function(z3)
+
+        # print('xxxxxxxxx', a3.shape)
+        return [np.array(a1), np.array(a2), np.array(a3)], [np.array(z1), np.array(z2), np.array(z3)]
 
     def back_propagation(self, grad_w, grad_b, grad_a,  a, z, img):
         for x in range(10):
@@ -94,11 +100,26 @@ class NeuralNetwork:
 
         return grad_w, grad_b, grad_a
 
+    def back_propagation_vectorized(self, grad_w, grad_b, grad_a,  a, z, y):
+        # print((self.activation_function_derivative(z[2]) * (2 * a[2] - 2 * y)).shape)
+        grad_w[2] += (self.activation_function_derivative(z[2]) * (2 * a[2] - 2 * y)) @ (np.transpose(a[1]))
+        grad_b[2] += (self.activation_function_derivative(z[2]) * (2 * a[2] - 2 * y))
+
+        grad_a[1] += np.transpose(self.weights[2]) @ (self.activation_function_derivative(z[2]) * (2 * a[2] - 2 * y))
+        grad_w[1] += (self.activation_function_derivative(z[1]) * a[0]) @ (np.transpose(a[1]))
+        grad_b[1] += (self.activation_function_derivative(z[1]) * grad_a[1])
+
+        grad_a[0] += np.transpose(self.weights[0]) @ (self.activation_function_derivative(z[1]) * grad_a[1])
+        grad_w[0] += (self.activation_function_derivative(z[0]) * grad_a[0]) @ np.transpose(y)
+        grad_b[0] += (self.activation_function_derivative(z[0]) * grad_a[0])
+
+        return grad_w, grad_b, grad_a
+
     def calculate_accuracy(self):
         number_of_correct_guesses = 0
         for image in range(self.number_of_samples):
-            guess = np.argmax(self.feedforward(self.train_set[image])[0][-1])
-            label = np.argmax(self.train_set[image][1])
+            guess = np.argmax(self.feedforward(self.set[image])[0][-1])
+            label = np.argmax(self.set[image][1])
             number_of_correct_guesses = number_of_correct_guesses + 1 if guess == label else number_of_correct_guesses
         return number_of_correct_guesses / self.number_of_samples
 
@@ -127,12 +148,12 @@ class NeuralNetwork:
         accuracy = []
         for i in range(self.number_of_epochs):
             epoch_cost = 0
-            np.random.shuffle(self.train_set)
+            np.random.shuffle(self.set)
 
             batch_count = 0
             for j in range(0, self.number_of_samples, self.batch_size):
                 batch_count += 1
-                batch = self.train_set[j:j + self.batch_size]
+                batch = self.set[j:j + self.batch_size]
 
                 grad_w3 = np.zeros((10, 16))
                 grad_w2 = np.zeros((16, 16))
@@ -160,8 +181,8 @@ class NeuralNetwork:
                     epoch_cost += c
 
                 for x in range(3):
-                    self.weights[x] -= grad_w[x] / self.batch_size
-                    self.biases[x] -= grad_b[x].T / self.batch_size
+                    self.weights[x] -= (grad_w[x] / self.batch_size) * self.learning_rate
+                    self.biases[x] -= (grad_b[x].T / self.batch_size) * self.learning_rate
 
             errors.append(epoch_cost / self.number_of_samples)
             accuracy.append(self.calculate_accuracy())
@@ -171,10 +192,12 @@ class NeuralNetwork:
         plt.plot(errors, 'g')
         plt.xlabel("Epoch", color='white')
         plt.ylabel("Error", color='white')
-        plt.title('Error in Training Process', color='white')
+        plt.title('Error in Training Process\n'
+                  'Learning rate: {} - Batch Size:{} - '
+                  '#Epochs: {}'.format(self.learning_rate, self.batch_size, self.number_of_epochs), color='white')
         plt.grid(color='gray', linestyle='--', linewidth=0.5)
 
-        # plt.show()
+        plt.show()
 
         # plt.plot(accuracy, 'r', linestyle="--")
         # plt.xlabel("Epoch", color='orange')

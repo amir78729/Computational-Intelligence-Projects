@@ -1,5 +1,6 @@
 from AdditionalFunctions import *
 from NeuralNetwork import *
+from NeuralNetworkVectorized import *
 import time
 from matplotlib.legend_handler import HandlerLine2D
 
@@ -14,17 +15,17 @@ if __name__ == '__main__':
     activation_function_derivative = activation_functions_derivative['sigmoid']
     activation_function = activation_functions['sigmoid']
     learning_rate = 1
-    number_of_epochs = 20
-    batch_size = 10
-    net = NeuralNetwork(learning_rate=learning_rate,
-                        number_of_epochs=number_of_epochs,
-                        batch_size=batch_size,
-                        train_set=train_set,
-                        number_of_samples=number_of_samples,
-                        activation_function_derivative=activation_function_derivative,
-                        activation_function=activation_function)
+    number_of_epochs = 200
+    batch_size = 5
+    # net = NeuralNetwork(learning_rate=learning_rate,
+    #                     number_of_epochs=number_of_epochs,
+    #                     batch_size=batch_size,
+    #                     train_set=train_set,
+    #                     number_of_samples=number_of_samples,
+    #                     activation_function_derivative=activation_function_derivative,
+    #                     activation_function=activation_function)
 
-    net1 = NeuralNetwork(learning_rate=learning_rate,
+    net = NeuralNetworkVectorized(learning_rate=learning_rate,
                         number_of_epochs=number_of_epochs,
                         batch_size=batch_size,
                         train_set=train_set,
@@ -36,7 +37,7 @@ if __name__ == '__main__':
     print('\tinitial accuracy: {}%'.format(net.calculate_accuracy() * 100))
     hr()
     start_time = time.time()
-    net.train_network()
+    e = net.train_network()
     stop_time = time.time()
     print('\n\ttraining process completed in {}s'.format(round(stop_time - start_time)).upper())
     accuracy = net.calculate_accuracy()
@@ -46,12 +47,12 @@ if __name__ == '__main__':
     # print('\tinitial accuracy: {}%'.format(net1.calculate_accuracy() * 100))
     # hr()
     # start_time = time.time()
-    # net1.train_network()
+    # e1 = net1.train_network()
     # stop_time = time.time()
     # print('\n\ttraining process completed in {}s'.format(round(stop_time - start_time)).upper())
     # accuracy = net1.calculate_accuracy()
     # print('\tthe accuracy of the network is {}%'.format(accuracy * 100).upper())
-
+    #
     # p1, = plt.plot(e, 'g', label="sigmoid")
     # plt.xlabel("Epoch", color='white')
     # plt.ylabel("Error", color='white')
