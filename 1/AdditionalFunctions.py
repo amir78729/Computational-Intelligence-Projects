@@ -7,7 +7,6 @@ import matplotlib
 import math
 
 
-
 def show_image(img):
     image = img[0].reshape((28, 28))
     plt.title('LABEL = {}'.format(np.argmax(img[1])))
@@ -16,17 +15,22 @@ def show_image(img):
 
 def shifted_test_set(test_set):
     res = copy.deepcopy(test_set)
-    for i in range(4):
-        temp = res[i][0].reshape((28, 28))
-        plt.imshow(temp, 'gray')
-        plt.show()
-        temp = np.roll(temp, 1, axis=1)
+    print('shifting pixels 4 units to the right'.upper())
+    for i in range(len(res)):
+        print('\r\t%d / %d' % (i + 1, len(res)), end='')
+        l = list(res[i])
+        l[0] = l[0].reshape((28, 28))
+        # plt.imshow(l[0], 'gray')
+        # plt.show()
+        l[0] = np.roll(l[0], 1, axis=1)
         for j in range(4):
-            temp[:, j] = np.zeros((28,))
-        # res[i][0] =
-        plt.imshow(temp, 'gray')
-        plt.show()
-
+            l[0][:, j] = np.zeros((28,))
+        # plt.imshow(l[0], 'gray')
+        # plt.show()
+        l[0] = np.matrix.flatten(l[0])
+        res[i] = tuple(l)
+    print('\tDONE')
+    return res
 
 
 def sigmoid(z):
@@ -41,6 +45,7 @@ def sigmoid(z):
     except OverflowError:
         res = 0
     return res
+
 
 def sigmoid_derivative(z):
     """
@@ -87,6 +92,7 @@ activation_functions = {
     'tanh': tanh,
     'relu': relu
 }
+
 
 def get_data(number_of_data, flag):
     # Reading The Train Set

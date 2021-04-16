@@ -64,6 +64,7 @@ class NeuralNetworkVectorized:
         grad_b[2] += (self.activation_function_derivative(z[2]) * (2 * a[2] - 2 * img[1]))
 
         grad_a[1] += np.transpose(self.weights[2]) @ (self.activation_function_derivative(z[2]) * (2 * a[2] - 2 * img[1]))
+        # grad_w[1] += (self.activation_function_derivative(z[1]) * grad_a[1]) @ (np.transpose(a[1]))
         grad_w[1] += (self.activation_function_derivative(z[1]) * a[0]) @ (np.transpose(a[1]))
         grad_b[1] += (self.activation_function_derivative(z[1]) * grad_a[1])
 
@@ -135,10 +136,15 @@ class NeuralNetworkVectorized:
                     a, z = self.feedforward(img)
                     grad_w, grad_b, grad_a = self.back_propagation(grad_w, grad_b, grad_a,  a, z, img)
 
-                    c = 0
-                    for x in range(10):
-                        c += (img[1][x, 0] - a[2][x, 0]) ** 2
-                    epoch_cost += c
+                    # c = 0
+                    # for x in range(10):
+                    #     c += (img[1][x, 0] - a[2][x, 0]) ** 2
+                    # epoch_cost += c
+
+                    x = img[1] - a[2]
+                    c = np.dot(x.T, x)
+                    epoch_cost += c[0][0]
+
                     img_index += 1
 
                 for x in range(3):
@@ -146,6 +152,7 @@ class NeuralNetworkVectorized:
                     self.biases[x] -= (grad_b[x] / self.batch_size) * self.learning_rate
 
             errors.append(epoch_cost / self.number_of_samples)
+
             accuracy.append(self.calculate_accuracy())
             print('EPOCH COMPLETED!')
         # return errors
