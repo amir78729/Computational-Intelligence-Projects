@@ -1,9 +1,6 @@
-# from read_dataset import *
-# import random
 import numpy as np
 import copy
 import matplotlib.pyplot as plt
-import matplotlib
 import math
 
 
@@ -56,6 +53,7 @@ def sigmoid_derivative(z):
     return s * (1 - s)
     # return np.multiply(s, np.subtract(1.0, s))
 
+
 def tanh(z):
     """
     z is a numpy.ndarray. Returns the hyperbolic tangent function for each input element.
@@ -74,11 +72,22 @@ def tanh_derivative(z):
     return np.subtract(1.0, np.multiply(f_z, f_z))
 
 
-def relu():
-    pass
+def relu(z):
+    # return np.maximum(0, z)
+    if z >= 0:
+        return z
+    else:
+        return 0
 
-def relu_derivative():
-    pass
+
+def relu_derivative(z):
+    # z[z > 0] = 1
+    # z[z <= 0] = 0
+    # return z
+    if z >= 0:
+        return 1
+    else:
+        return 0
 
 
 activation_functions_derivative = {
@@ -152,9 +161,3 @@ def get_data(number_of_data, flag):
 def hr():
     print()
     print('- ' * 40, '\n')
-
-
-
-
-
-
