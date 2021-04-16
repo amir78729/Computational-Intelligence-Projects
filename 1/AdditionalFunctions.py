@@ -1,6 +1,7 @@
 # from read_dataset import *
 # import random
 import numpy as np
+import copy
 import matplotlib.pyplot as plt
 import matplotlib
 import math
@@ -13,6 +14,21 @@ def show_image(img):
     plt.imshow(image, 'gray')
 
 
+def shifted_test_set(test_set):
+    res = copy.deepcopy(test_set)
+    for i in range(4):
+        temp = res[i][0].reshape((28, 28))
+        plt.imshow(temp, 'gray')
+        plt.show()
+        temp = np.roll(temp, 1, axis=1)
+        for j in range(4):
+            temp[:, j] = np.zeros((28,))
+        # res[i][0] =
+        plt.imshow(temp, 'gray')
+        plt.show()
+
+
+
 def sigmoid(z):
     """
     z is a numpy.ndarray. Returns the sigmoid function for each input element.
@@ -20,7 +36,11 @@ def sigmoid(z):
     :return σ(z) = 1 / ( 1 + e^(-1))
     """
     # return np.divide(1.0, np.add(1.0, np.exp(-z)))
-    return 1 / (1 + math.exp(-z))
+    try:
+        res = 1 / (1 + math.exp(-z))
+    except OverflowError:
+        res = 0
+    return res
 
 def sigmoid_derivative(z):
     """

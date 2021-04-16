@@ -30,10 +30,12 @@ class NeuralNetworkVectorized:
         self.activation_function = activation_function
         self.activation_function_derivative = np.vectorize(activation_function_derivative)
 
-    def set_number_of_samples(self, number):
-        self.number_of_samples = number
+    def set_set(self, s):
+        self.set = s
+        self.number_of_samples = len(s)
 
-    def set_
+    def set_number_of_samples(self, s):
+        self.number_of_samples = s
 
     def feedforward(self, img):
         z1 = (self.weights[0] @ img[0]) + self.biases[0]
