@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="309072f8-80bc-4b6f-b763-a9752dc86d24" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AdditionalFunctions.py" beforeDir="false" afterPath="$PROJECT_DIR$/AdditionalFunctions.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/NeuralNetworkVectorized.py" beforeDir="false" afterPath="$PROJECT_DIR$/NeuralNetworkVectorized.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Report.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Report.docx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Step3.py" beforeDir="false" afterPath="$PROJECT_DIR$/Step3.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/~WRL2463.tmp" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -44,8 +40,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Step3.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="21" column="18" selection-start-line="21" selection-start-column="18" selection-end-line="21" selection-end-column="18" />
+            <state relative-caret-position="-14">
+              <caret line="78" column="5" lean-forward="true" selection-start-line="78" selection-start-column="5" selection-end-line="78" selection-end-column="5" />
               <folding>
                 <element signature="e#0#33#0" expanded="true" />
               </folding>
@@ -65,11 +61,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/NeuralNetworkVectorized.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="185">
-              <caret line="67" column="69" selection-start-line="67" selection-start-column="69" selection-end-line="67" selection-end-column="69" />
+            <state relative-caret-position="179">
+              <caret line="158" lean-forward="true" selection-start-line="158" selection-end-line="158" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -77,20 +73,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/matplotlib/axes/_base.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="344" selection-start-line="344" selection-end-line="344" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/AdditionalFunctions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-865">
-              <caret line="95" selection-start-line="95" selection-end-line="95" />
+            <state relative-caret-position="34">
+              <caret line="35" selection-start-line="35" selection-end-line="46" selection-end-column="14" />
               <folding>
                 <element signature="e#45#63#0" expanded="true" />
               </folding>
@@ -164,12 +151,12 @@
         <option value="$PROJECT_DIR$/feedforward.py" />
         <option value="$PROJECT_DIR$/NeuralNetwork.py" />
         <option value="$PROJECT_DIR$/AdditionalFunctions.py" />
-        <option value="$PROJECT_DIR$/Step3.py" />
         <option value="$PROJECT_DIR$/NeuralNetworkVectorized.py" />
+        <option value="$PROJECT_DIR$/Step3.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="162" />
     <option name="y" value="3" />
     <option name="width" value="984" />
@@ -398,22 +385,22 @@
       <workItem from="1618228485185" duration="9387000" />
       <workItem from="1618238716118" duration="36541000" />
       <workItem from="1618396583942" duration="70786000" />
-      <workItem from="1618581174237" duration="8668000" />
+      <workItem from="1618581174237" duration="10178000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="208625000" />
+    <option name="totallyTimeSpent" value="210135000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
+    <frame x="-7" y="-7" width="1295" height="695" extended-state="7" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13257882" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.4007092" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.07446808" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39893618" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -427,9 +414,9 @@
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info active="true" anchor="right" id="SciView" order="3" sideWeight="0.9053255" visible="true" weight="0.2586904" />
+      <window_info active="true" anchor="right" id="SciView" order="3" sideWeight="0.90613025" visible="true" weight="0.8245756" />
       <window_info anchor="right" id="Database" order="4" />
-      <window_info anchor="right" x="0" y="0" width="273" height="495" id="Documentation" order="5" sideWeight="0.09467456" side_tool="true" visible="true" weight="0.2586904" />
+      <window_info anchor="right" x="0" y="0" width="273" height="495" id="Documentation" order="5" sideWeight="0.09386973" side_tool="true" visible="true" weight="0.8245756" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -439,7 +426,7 @@
     <SUITE FILE_PATH="coverage/1$feedforward.coverage" NAME="feedforward Coverage Results" MODIFIED="1618345070774" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/1$Main.coverage" NAME="Main Coverage Results" MODIFIED="1618229054218" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/1$elem.coverage" NAME="elem Coverage Results" MODIFIED="1618435842412" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/1$Step3.coverage" NAME="Step3 Coverage Results" MODIFIED="1618589633939" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Final version" />
+    <SUITE FILE_PATH="coverage/1$Step3.coverage" NAME="Step3 Coverage Results" MODIFIED="1618590407726" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Final version" />
     <SUITE FILE_PATH="coverage/1$CI.coverage" NAME="CI Coverage Results" MODIFIED="1618238000573" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="editorHistoryManager">
@@ -512,12 +499,19 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/AdditionalFunctions.py">
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/matplotlib/axes/_base.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-865">
-          <caret line="95" selection-start-line="95" selection-end-line="95" />
+        <state relative-caret-position="120">
+          <caret line="344" selection-start-line="344" selection-end-line="344" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/NeuralNetworkVectorized.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="179">
+          <caret line="158" lean-forward="true" selection-start-line="158" selection-end-line="158" />
           <folding>
-            <element signature="e#45#63#0" expanded="true" />
+            <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -532,17 +526,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/matplotlib/axes/_base.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="344" selection-start-line="344" selection-end-line="344" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Step3.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="21" column="18" selection-start-line="21" selection-start-column="18" selection-end-line="21" selection-end-column="18" />
+        <state relative-caret-position="-14">
+          <caret line="78" column="5" lean-forward="true" selection-start-line="78" selection-start-column="5" selection-end-line="78" selection-end-column="5" />
           <folding>
             <element signature="e#0#33#0" expanded="true" />
           </folding>
@@ -559,12 +546,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/NeuralNetworkVectorized.py">
+    <entry file="file://$PROJECT_DIR$/AdditionalFunctions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="185">
-          <caret line="67" column="69" selection-start-line="67" selection-start-column="69" selection-end-line="67" selection-end-column="69" />
+        <state relative-caret-position="34">
+          <caret line="35" selection-start-line="35" selection-end-line="46" selection-end-column="14" />
           <folding>
-            <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#45#63#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -136,14 +136,14 @@ class NeuralNetworkVectorized:
                     a, z = self.feedforward(img)
                     grad_w, grad_b, grad_a = self.back_propagation(grad_w, grad_b, grad_a,  a, z, img)
 
-                    # c = 0
-                    # for x in range(10):
-                    #     c += (img[1][x, 0] - a[2][x, 0]) ** 2
-                    # epoch_cost += c
+                    c = 0
+                    for x in range(10):
+                        c += (img[1][x, 0] - a[2][x, 0]) ** 2
+                    epoch_cost += c
 
-                    x = img[1] - a[2]
-                    c = np.dot(x.T, x)
-                    epoch_cost += c[0][0]
+                    # x = img[1] - a[2]
+                    # c = np.dot(x.T, x)
+                    # epoch_cost += c[0][0]
 
                     img_index += 1
 
@@ -155,7 +155,7 @@ class NeuralNetworkVectorized:
 
             accuracy.append(self.calculate_accuracy())
             print('EPOCH COMPLETED!')
-        # return errors
+        return errors
 
         plt.plot(errors, 'g')
         plt.xlabel("Epoch", color='white')

@@ -36,6 +36,14 @@ if __name__ == '__main__':
                         activation_function_derivative=activation_function_derivative,
                         activation_function=activation_function)
 
+    net2 = NeuralNetworkVectorized(learning_rate=learning_rate,
+                                  number_of_epochs=number_of_epochs,
+                                  batch_size=batch_size,
+                                  train_set=train_set,
+                                  number_of_samples=number_of_samples,
+                                  activation_function_derivative=activation_functions_derivative['tanh'],
+                                  activation_function=activation_functions['tanh'])
+
     # shifted_test_set = shifted_test_set(test_set)
 
 
@@ -50,35 +58,37 @@ if __name__ == '__main__':
     accuracy = net.calculate_accuracy()
     print('\tthe accuracy of the network for train set:\t{}%'.format(accuracy * 100).upper())
 
-    net.set_set(test_set)
+    # net.set_set(test_set)
 
     # net.set_number_of_samples(100)
+    #
+    # accuracy = net.calculate_accuracy()
+    # print('\tthe accuracy of the network for test  set:\t{}%'.format(accuracy * 100).upper())
 
-    accuracy = net.calculate_accuracy()
-    print('\tthe accuracy of the network for test  set:\t{}%'.format(accuracy * 100).upper())
     # plt.show()
     # print('step 2: calculating initial accuracy'.upper())
     # print('\tinitial accuracy: {}%'.format(net1.calculate_accuracy() * 100))
     # hr()
-    # start_time = time.time()
-    # e1 = net1.train_network()
-    # stop_time = time.time()
-    # print('\n\ttraining process completed in {}s'.format(round(stop_time - start_time)).upper())
-    # accuracy = net1.calculate_accuracy()
-    # print('\tthe accuracy of the network is {}%'.format(accuracy * 100).upper())
+    net2.set_number_of_samples(60000)
+    start_time = time.time()
+    e1 = net2.train_network()
+    stop_time = time.time()
+    print('\n\ttraining process completed in {}s'.format(round(stop_time - start_time)).upper())
+    accuracy = net2.calculate_accuracy()
+    print('\tthe accuracy of the network is {}%'.format(accuracy * 100).upper())
     #
-    # p1, = plt.plot(e, 'g', label="sigmoid")
-    # plt.xlabel("Epoch", color='white')
-    # plt.ylabel("Error", color='white')
-    # plt.title('Error in Training Process', color='yellow')
-    # plt.grid(color='gray', linestyle='--', linewidth=0.5)
-    #
-    # p2, = plt.plot(e1, 'b', label="tanh")
-    # plt.xlabel("Epoch", color='white')
-    # plt.ylabel("Error", color='white')
-    # plt.title('Error in Training Process', color='yellow')
-    # plt.grid(color='gray', linestyle='--', linewidth=0.5)
-    #
-    # plt.legend(handler_map={p1: HandlerLine2D(numpoints=4)})
-    #
-    # plt.show()
+    p1, = plt.plot(e, 'g', label="sigmoid")
+    plt.xlabel("Epoch", color='white')
+    plt.ylabel("Error", color='white')
+    plt.title('Error in Training Process', color='white')
+    plt.grid(color='gray', linestyle='--', linewidth=0.5)
+
+    p2, = plt.plot(e1, 'b', label="tanh")
+    plt.xlabel("Epoch", color='white')
+    plt.ylabel("Error", color='white')
+    plt.title('Error in Training Process', color='white')
+    plt.grid(color='gray', linestyle='--', linewidth=0.5)
+
+    plt.legend(handler_map={p1: HandlerLine2D(numpoints=4)})
+
+    plt.show()
